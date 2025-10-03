@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: google-calendar-backend
+    env: docker
+    plan: free
+    region: oregon
+    envVars:
+      - key: PORT
+        value: "8001"
+      - key: HOST
+        value: "0.0.0.0"
+      - key: DEBUG
+        value: "false"
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: BASE_URL
+        value: https://google-calendar-backend.onrender.com

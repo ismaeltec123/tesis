@@ -1,0 +1,48 @@
+{
+  "events": [
+    {
+      "title": "Asesoria 6to C24 WILLY/ISMAEL",
+      "description": "",
+      "date": "2025-10-02T11:30:00-05:00",
+      "end_time": "2025-10-02T12:00:00-05:00",
+      "type": "importado",
+      "reminder": false,
+      "google_event_id": "3g1j6p6b9in6263cos3jcmt4pf",
+      "firebase_id": "temp_id_1759284529.46833",
+      "created_at": "2025-09-30T21:08:49.468330"
+    },
+    {
+      "title": "prueba 1",
+      "description": "",
+      "date": "2025-10-03T11:30:00-05:00",
+      "end_time": "2025-10-03T12:30:00-05:00",
+      "type": "importado",
+      "reminder": false,
+      "google_event_id": "7d1s2ou45tip11hi9agb7njc80",
+      "firebase_id": "temp_id_1759284529.486236",
+      "created_at": "2025-09-30T21:08:49.486236"
+    },
+    {
+      "title": "Ismael",
+      "description": "",
+      "date": "2025-09-30T22:30:00-05:00",
+      "end_time": "2025-09-30T23:30:00-05:00",
+      "type": "importado",
+      "reminder": false,
+      "google_event_id": "4r15a6s534ak87cu123a6jjtdc",
+      "firebase_id": "temp_id_1759287283.347003",
+      "created_at": "2025-09-30T21:54:43.347003"
+    },
+    {
+      "title": "Asesoria 6to C24 WILLY/ISMAEL",
+      "description": "",
+      "date": "2025-10-03T11:30:00-05:00",
+      "end_time": "2025-10-03T12:00:00-05:00",
+      "type": "importado",
+      "reminder": false,
+      "google_event_id": "6lfmdqgr6trmckjbalkmauf9od",
+      "firebase_id": "temp_id_1759425219.012473",
+      "created_at": "2025-10-02T12:13:39.012473"
+    }
+  ]
+}
