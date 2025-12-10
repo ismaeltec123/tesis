@@ -1,89 +1,48 @@
 {
   "events": [
     {
-      "title": "Avance 1 del Proyecto de Fin de Carrera(PFC). Willy Calisaya/Ismael Quispe",
-      "description": "",
-      "date": "2025-09-05T11:00:00-05:00",
-      "end_time": "2025-09-05T11:30:00-05:00",
-      "type": "importado",
-      "reminder": false,
-      "google_event_id": "5l0d2vke482t0ahnblt9nnl3oq",
-      "firebase_id": "temp_id_1758897118.537468",
-      "created_at": "2025-09-26T09:31:58.537468"
-    },
-    {
-      "title": "Asesoria 6to AB C24 Willy/Ismael",
-      "description": "",
-      "date": "2025-09-26T15:30:00+00:00",
-      "end_time": "2025-09-26T16:00:00+00:00",
-      "type": "importado",
-      "reminder": true,
-      "google_event_id": "50v7t3ihepurfnpm7cjrrgmpcp",
-      "firebase_id": "temp_id_1758897118.635496",
-      "created_at": "2025-09-26T09:31:58.635496",
-      "locally_modified": true,
-      "last_modified": "2025-09-26T10:36:14.585843",
-      "updated_at": "2025-09-26T10:36:15.758884"
-    },
-    {
-      "title": "Asesoria 6to C24 WILLY/ISMAEL",
-      "description": "",
-      "date": "2025-10-02T11:30:00-05:00",
-      "end_time": "2025-10-02T12:00:00-05:00",
-      "type": "importado",
-      "reminder": false,
-      "google_event_id": "3g1j6p6b9in6263cos3jcmt4pf",
-      "firebase_id": "temp_id_1758901818.676574",
-      "created_at": "2025-09-26T10:50:18.676574"
-    },
-    {
-      "title": "prueba 1",
-      "description": "",
-      "date": "2025-10-03T11:30:00-05:00",
-      "end_time": "2025-10-03T12:30:00-05:00",
-      "type": "importado",
-      "reminder": false,
-      "google_event_id": "7d1s2ou45tip11hi9agb7njc80",
-      "firebase_id": "temp_id_1758902031.688254",
-      "created_at": "2025-09-26T10:53:51.688254"
-    },
-    {
-      "title": "Demo1 - Presentacion - entregable 2",
-      "description": "Tenemos que entregar este entregable",
-      "date": "2025-09-26T16:30:00+00:00",
-      "end_time": "2025-09-26T18:30:00",
-      "type": "obligatorio",
-      "reminder": false,
-      "google_event_id": "6d69gnuht75t1v5rprrsg2l3hj",
-      "firebase_id": "temp_id_1758902713.552396",
-      "created_at": "2025-09-26T11:05:13.552396",
-      "locally_modified": true,
-      "last_modified": "2025-09-26T11:05:47.681495",
-      "updated_at": "2025-09-26T11:05:48.851497"
-    },
-    {
-      "title": "Desde flutter - creacion de evento",
-      "description": "123",
-      "date": "2025-09-27T11:06:00",
-      "end_time": "2025-09-27T12:06:00",
-      "type": "estudio",
-      "reminder": false,
-      "google_event_id": "qqflirlqdskrhk2s99r4nsf7a0",
-      "firebase_id": "temp_id_1758902771.565465",
-      "created_at": "2025-09-26T11:06:11.565465"
-    },
-    {
-      "title": "Manejar bicicleta",
+      "title": "Salir a correr",
       "description": "Evento generado por IA - exercise",
-      "date": "2025-09-27T06:00:00+00:00",
-      "end_time": "2025-09-27T06:45:00+00:00",
-      "type": "recreativo",
+      "date": "2025-11-07T06:00:00",
+      "end_time": "2025-11-07T06:30:00",
+      "type": "importado",
       "reminder": true,
-      "ai_generated": true,
-      "firebase_id": "temp_id_1758902802.041889",
-      "created_at": "2025-09-26T11:06:42.041889",
-      "google_event_id": "d1j76enai1r84qgkh4tghu8b60",
-      "updated_at": "2025-09-26T11:06:44.381822"
+      "google_event_id": "lctmactf81utn57hvr1p7jdsrk",
+      "firebase_id": "temp_id_1762528697.715255",
+      "created_at": "2025-11-07T10:18:17.715255"
+    },
+    {
+      "title": "Bailar",
+      "description": "\u00bfTe gusta bailar?",
+      "date": "2025-11-07T06:30:00",
+      "end_time": "2025-11-07T07:30:00",
+      "type": "importado",
+      "reminder": false,
+      "google_event_id": "51nggbdn0lo3n3rhrn8tmsb0ag",
+      "firebase_id": "temp_id_1762528697.724696",
+      "created_at": "2025-11-07T10:18:17.724696"
+    },
+    {
+      "title": "Asesoria 6toAB C24 Calisaya / Ismael",
+      "description": "",
+      "date": "2025-11-07T11:00:00",
+      "end_time": "2025-11-07T11:30:00",
+      "type": "importado",
+      "reminder": false,
+      "google_event_id": "0qna37atgk2mjtpdhp6120u077",
+      "firebase_id": "temp_id_1762528697.73635",
+      "created_at": "2025-11-07T10:18:17.736350"
+    },
+    {
+      "title": "Leer material complementario",
+      "description": "Evento generado por IA - study",
+      "date": "2025-11-07T11:30:00",
+      "end_time": "2025-11-07T12:30:00",
+      "type": "importado",
+      "reminder": true,
+      "google_event_id": "tnmk33vksfm3l7r0do2o4ki4dg",
+      "firebase_id": "temp_id_1762528697.749664",
+      "created_at": "2025-11-07T10:18:17.749664"
     }
   ]
 }

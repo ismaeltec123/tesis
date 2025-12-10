@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../viewmodels/event_viewmodel.dart';
 import '../models/event_model.dart';
 import '../widgets/ai_organizer_dialog.dart';
 import '../widgets/enhanced_ai_dialog.dart';
+import '../widgets/ml_pattern_dialog.dart';
+import '../widgets/ml_prediction_dialog.dart';
+import '../widgets/event_status_bottom_sheet.dart';
+import '../widgets/event_status_chip.dart';
 import 'package:intl/intl.dart';
 
 extension StringExtension on String {
@@ -103,6 +109,110 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
                   tooltip: 'Sincronizar con Google Calendar',
                 );
               }
+            },
+          ),
+          // Menú de opciones de Google Calendar
+          Consumer<EventViewModel>(
+            builder: (context, viewModel, child) {
+              return PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert),
+                tooltip: 'Opciones de Google Calendar',
+                onSelected: (value) async {
+                  if (value == 'connect') {
+                    _showGoogleAuthDialog(context, viewModel);
+                  } else if (value == 'disconnect') {
+                    _showDisconnectDialog(context, viewModel);
+                  } else if (value == 'sync') {
+                    await viewModel.manualSync();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Sincronización iniciada'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  } else if (value == 'generate_ml_history') {
+                    _showGenerateMLHistoryDialog(context, viewModel);
+                  } else if (value == 'ml_prediction') {
+                    _showMLPredictionDialog(context);
+                  } else if (value == 'status') {
+                    _showServerStatusDialog(context, viewModel);
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'connect',
+                    child: Row(
+                      children: [
+                        Icon(
+                          viewModel.isGoogleAuthenticated 
+                            ? Icons.refresh 
+                            : Icons.cloud_sync,
+                          color: Colors.green,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          viewModel.isGoogleAuthenticated 
+                            ? 'Reconectar Google Calendar' 
+                            : 'Conectar Google Calendar',
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (viewModel.isGoogleAuthenticated)
+                    const PopupMenuItem(
+                      value: 'disconnect',
+                      child: Row(
+                        children: [
+                          Icon(Icons.cloud_off, color: Colors.orange),
+                          SizedBox(width: 12),
+                          Text('Desconectar Google Calendar'),
+                        ],
+                      ),
+                    ),
+                  if (viewModel.isGoogleAuthenticated)
+                    const PopupMenuItem(
+                      value: 'sync',
+                      child: Row(
+                        children: [
+                          Icon(Icons.sync, color: Colors.blue),
+                          SizedBox(width: 12),
+                          Text('Sincronizar Ahora'),
+                        ],
+                      ),
+                    ),
+                  const PopupMenuDivider(),
+                  const PopupMenuItem(
+                    value: 'ml_prediction',
+                    child: Row(
+                      children: [
+                        Icon(Icons.auto_awesome, color: Colors.purple),
+                        SizedBox(width: 12),
+                        Text('Predicción ML de Horarios'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'generate_ml_history',
+                    child: Row(
+                      children: [
+                        Icon(Icons.psychology, color: Colors.purple),
+                        SizedBox(width: 12),
+                        Text('Generar Historial ML'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'status',
+                    child: Row(
+                      children: [
+                        Icon(Icons.info_outline, color: Colors.grey),
+                        SizedBox(width: 12),
+                        Text('Estado del Servidor'),
+                      ],
+                    ),
+                  ),
+                ],
+              );
             },
           ),
           Container(
@@ -344,22 +454,22 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Botón Enhanced AI (ML + Groq)
+          // Botón ML Pattern Analysis (Nuevo)
           Container(
             margin: const EdgeInsets.only(bottom: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               gradient: const LinearGradient(
                 colors: [
-                  Color(0xFF6A1B9A),
-                  Color(0xFF4A148C),
+                  Color(0xFFE91E63),
+                  Color(0xFFC2185B),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF6A1B9A).withOpacity(0.4),
+                  color: const Color(0xFFE91E63).withOpacity(0.4),
                   spreadRadius: 2,
                   blurRadius: 8,
                   offset: const Offset(0, 4),
@@ -369,13 +479,13 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
             child: FloatingActionButton(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              heroTag: "enhanced_ai",
+              heroTag: "ml_patterns",
               child: const Icon(
-                Icons.psychology,
+                Icons.insights,
                 size: 28,
                 color: Colors.white,
               ),
-              onPressed: () => _showEnhancedAIDialog(context),
+              onPressed: () => _showMLPatternDialog(context),
             ),
           ),
           // Botón de Organizar con IA (Original)
@@ -471,6 +581,11 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
       }
       eventsByDate[dateKey]!.add(event);
     }
+    
+    // Ordenar eventos dentro de cada día por hora
+    eventsByDate.forEach((key, value) {
+      value.sort((a, b) => a.date.compareTo(b.date));
+    });
 
     // Filtrar eventos del mes actual
     List<MapEntry<DateTime, List<EventModel>>> monthEvents = eventsByDate.entries
@@ -607,6 +722,9 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
   Widget _buildDetailViewEvents(List<EventModel> events) {
     final dayEvents = events.where((event) =>
         isSameDay(event.date, _selectedDay ?? DateTime.now())).toList();
+    
+    // Ordenar eventos por hora (más temprano primero)
+    dayEvents.sort((a, b) => a.date.compareTo(b.date));
 
     if (dayEvents.isEmpty) {
       return Center(
@@ -636,27 +754,30 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
       itemCount: dayEvents.length,
       itemBuilder: (context, index) {
         final event = dayEvents[index];
-        return Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: _eventColor(event.type).withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
-            border: Border.all(
-              color: _eventColor(event.type).withOpacity(0.2),
-              width: 1,
-            ),
-          ),
+        return InkWell(
+          onTap: () => _showEventStatusBottomSheet(event),
+          borderRadius: BorderRadius.circular(16),
           child: Container(
-            padding: const EdgeInsets.all(16),
-            child: Row(
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: _eventColor(event.type).withOpacity(0.1),
+                  spreadRadius: 1,
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+              border: Border.all(
+                color: _eventColor(event.type).withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: Row(
               children: [
                 // Indicador de tiempo y tipo
                 Container(
@@ -742,6 +863,9 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
                           ),
                         ],
                       ),
+                      const SizedBox(height: 8),
+                      // Chip de estado del evento
+                      EventStatusChip(status: event.status.value),
                       const SizedBox(height: 8),
                       // Descripción más visible
                       if (event.description.isNotEmpty)
@@ -852,6 +976,7 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
               ],
             ),
           ),
+          ),
         );
       },
     );
@@ -930,17 +1055,31 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
   }
 
   void _showAIDialog(BuildContext context) {
+    final viewModel = Provider.of<EventViewModel>(context, listen: false);
+    
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AIOrganizerDialog(
         selectedDate: _selectedDay ?? DateTime.now(),
-        onEventsCreated: (events) {
-          // Manejar eventos creados por AI
-          for (var event in events) {
-            _addEvent(event);
-          }
+        allEvents: viewModel.events,
+        onEventsCreated: (suggestions) {
+          // Los eventos ya fueron creados en Google Calendar por el backend
+          // Solo necesitamos sincronizar para traerlos
+          viewModel.quickSync();
         },
+      ),
+    );
+  }
+
+  void _showMLPatternDialog(BuildContext context) {
+    final viewModel = Provider.of<EventViewModel>(context, listen: false);
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => MLPatternAnalysisDialog(
+        allEvents: viewModel.events,
       ),
     );
   }
@@ -983,25 +1122,306 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
       builder: (context) => AlertDialog(
         title: const Row(
           children: [
-            Icon(Icons.sync_disabled, color: Colors.orange),
+            Icon(Icons.cloud_sync, color: Colors.green),
             SizedBox(width: 8),
             Text('Conectar Google Calendar'),
           ],
         ),
         content: const Text(
-          '¿Deseas conectar tu cuenta de Google Calendar para sincronizar eventos automáticamente?',
+          'Se abrirá tu navegador para que selecciones tu cuenta de Gmail.\n\n'
+          'Después de autorizar, podrás sincronizar tus eventos automáticamente.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancelar'),
           ),
-          ElevatedButton(
-            onPressed: () {
+          ElevatedButton.icon(
+            icon: const Icon(Icons.open_in_browser),
+            label: const Text('Conectar Ahora'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
               Navigator.pop(context);
-              viewModel.checkStatus();
+              
+              // Mostrar indicador de carga
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Row(
+                    children: [
+                      CircularProgressIndicator(color: Colors.white),
+                      SizedBox(width: 16),
+                      Text('Abriendo navegador...'),
+                    ],
+                  ),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              
+              // Iniciar autenticación automática
+              bool success = await viewModel.authenticateGoogleAuto();
+              
+              if (success) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Row(
+                      children: [
+                        Icon(Icons.check_circle, color: Colors.white),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            'Navegador abierto. Selecciona tu cuenta de Gmail y autoriza.',
+                          ),
+                        ),
+                      ],
+                    ),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 4),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Row(
+                      children: [
+                        Icon(Icons.error, color: Colors.white),
+                        SizedBox(width: 16),
+                        Text('Error al iniciar autenticación'),
+                      ],
+                    ),
+                    backgroundColor: Colors.red,
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              }
             },
-            child: const Text('Conectar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDisconnectDialog(BuildContext context, EventViewModel viewModel) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.warning, color: Colors.orange),
+            SizedBox(width: 8),
+            Text('Desconectar Google Calendar'),
+          ],
+        ),
+        content: const Text(
+          '¿Estás seguro de que deseas desconectar tu cuenta de Google Calendar?\n\n'
+          'Tendrás que volver a autenticarte para sincronizar eventos.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.cloud_off),
+            label: const Text('Desconectar'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              Navigator.pop(context);
+              
+              // Mostrar indicador de carga
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Row(
+                    children: [
+                      CircularProgressIndicator(color: Colors.white),
+                      SizedBox(width: 16),
+                      Text('Desconectando...'),
+                    ],
+                  ),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              
+              // Eliminar token
+              bool success = await viewModel.removeGoogleToken();
+              
+              if (success) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Row(
+                      children: [
+                        Icon(Icons.check_circle, color: Colors.white),
+                        SizedBox(width: 16),
+                        Text('Google Calendar desconectado exitosamente'),
+                      ],
+                    ),
+                    backgroundColor: Colors.orange,
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Row(
+                      children: [
+                        Icon(Icons.error, color: Colors.white),
+                        SizedBox(width: 16),
+                        Text('Error al desconectar'),
+                      ],
+                    ),
+                    backgroundColor: Colors.red,
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showMLPredictionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => MLPredictionDialog(
+        userId: 'ismael.qa13@gmail.com', // TODO: Obtener del auth actual
+      ),
+    );
+  }
+
+  void _showGenerateMLHistoryDialog(BuildContext context, EventViewModel viewModel) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.psychology, color: Colors.purple),
+            SizedBox(width: 8),
+            Text('Generar Historial ML'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              '🤖 Esta función generará eventos históricos automáticamente para entrenar el Machine Learning.',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            const Text('📋 Proceso:'),
+            const SizedBox(height: 8),
+            const Text('1. Lee tus eventos actuales (horario importado)'),
+            const Text('2. Los replica hacia el PASADO (4 semanas)'),
+            const Text('3. Asigna estados variados: completado, no_realizado, etc.'),
+            const Text('4. Crea eventos en Google Calendar'),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.purple.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.info_outline, color: Colors.purple, size: 20),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Esto creará ~60 eventos históricos para que el ML aprenda tus patrones',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.auto_awesome),
+            label: const Text('Generar Historial'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.purple,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              Navigator.pop(context);
+              
+              // Mostrar modal de progreso
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => const _MLHistoryProgressDialog(),
+              );
+              
+              try {
+                // Llamar al backend para generar historial
+                final response = await http.post(
+                  Uri.parse('http://localhost:8001/api/ml-history/generate-from-current'),
+                  headers: {'Content-Type': 'application/json'},
+                  body: json.encode({
+                    'history_weeks': 4,
+                  }),
+                );
+                
+                Navigator.pop(context); // Cerrar modal de progreso
+                
+                if (response.statusCode == 200) {
+                  final data = json.decode(response.body);
+                  final totalEvents = data['total_events'] ?? 0;
+                  final syncedEvents = data['google_calendar_synced'] ?? 0;
+                  
+                  // Sincronizar para ver los nuevos eventos
+                  await viewModel.manualSync();
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Row(
+                            children: [
+                              Icon(Icons.check_circle, color: Colors.white),
+                              SizedBox(width: 8),
+                              Text('✅ Historial ML Generado'),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text('📊 $totalEvents eventos históricos creados'),
+                          Text('🔗 $syncedEvents sincronizados con Google Calendar'),
+                        ],
+                      ),
+                      backgroundColor: Colors.green,
+                      duration: const Duration(seconds: 5),
+                    ),
+                  );
+                } else {
+                  final errorData = json.decode(response.body);
+                  throw Exception(errorData['detail'] ?? 'Error desconocido');
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('❌ Error: $e'),
+                    backgroundColor: Colors.red,
+                    duration: const Duration(seconds: 5),
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),
@@ -1620,6 +2040,34 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
     }
   }
 
+  // Muestra el bottom sheet para cambiar estado del evento
+  void _showEventStatusBottomSheet(EventModel event) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (bottomSheetContext) => EventStatusBottomSheet(
+        eventId: event.id,
+        currentStatus: event.status.value,
+        eventTitle: event.title,
+        onStatusChanged: () async {
+          // Esperar un momento para que el bottom sheet termine de cerrarse
+          await Future.delayed(Duration(milliseconds: 300));
+          
+          if (!mounted) return;
+          
+          // Recargar eventos después de cambiar el estado
+          final viewModel = Provider.of<EventViewModel>(context, listen: false);
+          await viewModel.loadEvents();
+          
+          if (mounted) {
+            setState(() {});
+          }
+        },
+      ),
+    );
+  }
+
   void _showDeleteConfirmation(EventModel event) {
     showDialog(
       context: context,
@@ -1687,5 +2135,53 @@ class _CalendarViewState extends State<CalendarView> with WidgetsBindingObserver
         ),
       );
     }
+  }
+}
+
+// Modal de progreso para generación de historial ML
+class _MLHistoryProgressDialog extends StatelessWidget {
+  const _MLHistoryProgressDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      child: Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(
+                color: Colors.purple,
+                strokeWidth: 3,
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                '🤖 Generando Historial ML',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Procesando eventos...',
+                style: TextStyle(color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                '• Leyendo horario importado\n'
+                '• Generando 4 semanas de historial\n'
+                '• Asignando estados realistas\n'
+                '• Sincronizando con Google Calendar',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

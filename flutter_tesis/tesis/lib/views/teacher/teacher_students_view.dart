@@ -29,6 +29,7 @@ class _TeacherStudentsViewState extends State<TeacherStudentsView> {
     }
 
     final students = StudentListTemplate.getMockStudents();
+    if (!mounted) return; // FIX: Check if widget is still mounted
     setState(() {
       _filteredStudents = students.where((student) {
         final matchesSearch = _searchQuery.isEmpty ||
@@ -95,6 +96,7 @@ class _TeacherStudentsViewState extends State<TeacherStudentsView> {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 if (TeacherTemplateConfig.USE_MOCK_STUDENTS)
                   Container(
@@ -109,12 +111,15 @@ class _TeacherStudentsViewState extends State<TeacherStudentsView> {
                       children: [
                         Icon(Icons.science_outlined, size: 12, color: Colors.orange[800]),
                         const SizedBox(width: 4),
-                        Text(
-                          '🎭 Datos de demostración',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.orange[800],
-                            fontWeight: FontWeight.w500,
+                        Flexible(
+                          child: Text(
+                            '🎭 Datos de demostración',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.orange[800],
+                              fontWeight: FontWeight.w500,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -123,9 +128,14 @@ class _TeacherStudentsViewState extends State<TeacherStudentsView> {
               ],
             ),
           ),
+          const SizedBox(width: 8),
           Text(
-            '${_filteredStudents.length} estudiantes',
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+            '${_filteredStudents.length}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),

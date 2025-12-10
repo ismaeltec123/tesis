@@ -88,12 +88,17 @@ async def update_event(event_id: str, event_update: EventUpdate):
         # Preparar datos actualizados
         update_data = event_update.dict(exclude_unset=True)
         
+        # DEBUG: Ver qué datos vienen en la actualización
+        print(f"🔍 DEBUG - Datos recibidos para actualizar: {update_data}")
+        print(f"🔍 DEBUG - Status en update_data: {update_data.get('status', 'NO PRESENTE')}")
+        
         # Marcar que este evento ha sido modificado localmente
         update_data['locally_modified'] = True
         update_data['last_modified'] = datetime.now().isoformat()
         
         print(f"🔄 Actualizando evento: {current_event.get('title')} -> {update_data.get('title', 'sin cambio de título')}")
         print(f"📝 Tipo actualizado: {current_event.get('type')} -> {update_data.get('type', 'sin cambio')}")
+        print(f"📝 Status actualizado: {current_event.get('status', 'sin status')} -> {update_data.get('status', 'sin cambio')}")
         
         # Actualizar en Google Calendar si tiene ID de Google
         google_event_id = current_event.get('google_event_id')
@@ -156,3 +161,79 @@ async def delete_event(event_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al eliminar evento: {str(e)}")
+
+
+@router.post("/events/batch")
+async def create_events_batch(payload: dict):
+    """Crea múltiples eventos en Google Calendar y Firebase"""
+    try:
+        events_data = payload.get('events', [])
+        
+        if not events_data:
+            raise HTTPException(status_code=400, detail="No se proporcionaron eventos")
+        
+        print(f"📦 Creando {len(events_data)} eventos en batch...")
+        
+        created_events = []
+        errors = []
+        
+        for idx, event_data in enumerate(events_data):
+            try:
+                # Marcar como obligatorio si viene de importación de horarios
+                if 'type' not in event_data:
+                    event_data['type'] = 'obligatorio'
+                
+                # Crear en Google Calendar
+                google_event_id = calendar_service.create_event(event_data)
+                
+                # Convertir al formato interno para Firebase
+                start_datetime = event_data.get('start', {}).get('dateTime')
+                end_datetime = event_data.get('end', {}).get('dateTime')
+                
+                # Crear objeto para Firebase con formato correcto
+                firebase_event = {
+                    'title': event_data.get('summary', 'Clase'),
+                    'description': event_data.get('description', ''),
+                    'date': start_datetime,
+                    'end_time': end_datetime,
+                    'type': event_data['type'],
+                    'google_event_id': google_event_id,
+                    'location': event_data.get('location', ''),
+                    'reminder': False
+                }
+                
+                # Crear en Firebase
+                firebase_id = firebase_service.create_event(firebase_event)
+                
+                created_events.append({
+                    'index': idx,
+                    'firebase_id': firebase_id,
+                    'google_event_id': google_event_id,
+                    'title': firebase_event.get('title')
+                })
+                
+                print(f"✅ Evento {idx + 1}/{len(events_data)} creado: {event_data.get('title')}")
+                
+            except Exception as e:
+                error_msg = f"Error en evento {idx + 1}: {str(e)}"
+                print(f"❌ {error_msg}")
+                errors.append({
+                    'index': idx,
+                    'error': error_msg,
+                    'event': event_data.get('summary', 'Sin título')
+                })
+        
+        print(f"✅ Batch completado: {len(created_events)} creados, {len(errors)} errores")
+        
+        return {
+            "success": True,
+            "created_count": len(created_events),
+            "error_count": len(errors),
+            "created_events": created_events,
+            "errors": errors if errors else None
+        }
+        
+    except Exception as e:
+        print(f"❌ Error en batch creation: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error al crear eventos: {str(e)}")
+

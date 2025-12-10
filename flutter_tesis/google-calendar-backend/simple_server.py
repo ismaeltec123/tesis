@@ -77,6 +77,41 @@ try:
 except Exception as e:
     print(f"⚠️  Error cargando rutas de IA: {e}")
 
+try:
+    from app.routes.ml_routes import router as ml_router
+    app.include_router(ml_router, prefix="/api")
+    print("✅ Rutas de ML Pattern Analysis cargadas")
+except Exception as e:
+    print(f"⚠️  Error cargando rutas de ML: {e}")
+
+try:
+    from app.routes.ml_scenario_routes import router as ml_scenario_router
+    app.include_router(ml_scenario_router, prefix="/api")
+    print("✅ Rutas de ML Scenario Generator cargadas")
+except Exception as e:
+    print(f"⚠️  Error cargando rutas de ML Scenario: {e}")
+
+try:
+    from app.routes.ml_history_routes import router as ml_history_router
+    app.include_router(ml_history_router, prefix="/api")
+    print("✅ Rutas de ML History Generator cargadas")
+except Exception as e:
+    print(f"⚠️  Error cargando rutas de ML History: {e}")
+
+try:
+    from app.routes.schedule_parser_routes import router as schedule_parser_router
+    app.include_router(schedule_parser_router, prefix="/api")
+    print("✅ Rutas de Schedule Parser cargadas")
+except Exception as e:
+    print(f"⚠️  Error cargando rutas de Schedule Parser: {e}")
+
+try:
+    from app.routes.admin_routes import router as admin_router
+    app.include_router(admin_router)
+    print("✅ Rutas de Admin cargadas")
+except Exception as e:
+    print(f"⚠️  Error cargando rutas de Admin: {e}")
+
 if __name__ == "__main__":
     import os
     
@@ -93,6 +128,8 @@ if __name__ == "__main__":
     print("   - /api/calendar/events (Gestión de eventos)")
     print("   - /api/sync/full-sync (Sincronización)")
     print("   - /api/ai/analyze-schedule (Organización IA)")
+    print("   - /api/ml/analyze-patterns (Análisis ML de patrones)")
+    print("   - /api/schedule-parser/parse-schedule (Importar horarios JPG/PNG)")
     print(f"🌍 Entorno: {'Desarrollo' if debug else 'Producción'}")
     print("-" * 50)
     

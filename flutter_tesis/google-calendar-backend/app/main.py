@@ -8,6 +8,7 @@ from app.routes.auth_routes import router as auth_router
 from app.routes.calendar_routes import router as calendar_router
 from app.routes.sync_routes import router as sync_router
 from app.routes.enhanced_ai_routes import router as enhanced_ai_router
+from app.routes.schedule_parser_routes import router as schedule_parser_router
 
 # Crear la aplicación FastAPI
 app = FastAPI(
@@ -30,6 +31,7 @@ app.include_router(auth_router, prefix="/api")
 app.include_router(calendar_router, prefix="/api")
 app.include_router(sync_router, prefix="/api")
 app.include_router(enhanced_ai_router, prefix="/api")  # 🆕 Enhanced AI routes
+app.include_router(schedule_parser_router, prefix="/api")  # 🆕 Schedule Parser routes
 
 @app.get("/")
 async def root():
@@ -42,6 +44,7 @@ async def root():
             "calendar": "/api/calendar",
             "sync": "/api/sync",
             "enhanced-ai": "/api/enhanced-ai",  # 🆕 ML + IA endpoints
+            "schedule-parser": "/api/schedule-parser",  # 🆕 Schedule Parser endpoints
             "docs": "/docs",
             "redoc": "/redoc"
         }

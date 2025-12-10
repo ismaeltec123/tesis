@@ -54,11 +54,19 @@ class MLDataProcessor:
                 title = event.get('title', '').lower()
                 description = event.get('description', '').lower()
                 event_type = event.get('type', 'general')
+                event_status = event.get('status', 'completado')  # Estado ML del evento
+                category = event.get('category', 'general')  # Categoría del evento
                 
                 # Features categóricas
                 is_study = 1 if any(word in title for word in ['estudio', 'estudiar', 'examen', 'tarea', 'matematicas', 'fisica']) else 0
                 is_work = 1 if any(word in title for word in ['trabajo', 'reunion', 'meeting', 'proyecto']) else 0
                 is_exercise = 1 if any(word in title for word in ['ejercicio', 'gym', 'correr', 'deporte', 'nadar']) else 0
+                
+                # Feature de estado (para entrenar el ML)
+                was_completed = 1 if event_status == 'completado' else 0
+                was_cancelled = 1 if event_status == 'cancelado' else 0
+                was_postponed = 1 if event_status == 'postergado' else 0
+                was_not_done = 1 if event_status == 'no_realizado' else 0
                 
                 # Features de tiempo relativo
                 is_morning = 1 if 6 <= hour < 12 else 0
@@ -82,6 +90,12 @@ class MLDataProcessor:
                     'is_weekend': is_weekend,
                     'productivity_score': productivity_score,
                     'event_type': event_type,
+                    'event_status': event_status,
+                    'category': category,
+                    'was_completed': was_completed,
+                    'was_cancelled': was_cancelled,
+                    'was_postponed': was_postponed,
+                    'was_not_done': was_not_done,
                     'title_length': len(title),
                 })
                 

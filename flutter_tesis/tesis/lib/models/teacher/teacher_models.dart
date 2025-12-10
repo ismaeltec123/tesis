@@ -93,6 +93,7 @@ class ClassSchedule {
   final String endTime;
   final String classroom;
   final String? building;
+  final String? weekType; // NUEVO: 'par' o 'impar'
 
   ClassSchedule({
     required this.id,
@@ -103,6 +104,7 @@ class ClassSchedule {
     required this.endTime,
     required this.classroom,
     this.building,
+    this.weekType, // NUEVO
   });
 
   factory ClassSchedule.fromJson(Map<String, dynamic> json) {
@@ -115,6 +117,7 @@ class ClassSchedule {
       endTime: json['end_time'] ?? '',
       classroom: json['classroom'] ?? '',
       building: json['building'],
+      weekType: json['week_type'], // NUEVO
     );
   }
 
@@ -128,6 +131,7 @@ class ClassSchedule {
       'end_time': endTime,
       'classroom': classroom,
       'building': building,
+      'week_type': weekType, // NUEVO
     };
   }
 }

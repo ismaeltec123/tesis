@@ -52,6 +52,9 @@ class AIOrganizer:
         """
         # Filtrar eventos del día objetivo
         day_events = []
+        existing_study_time = 0  # Tiempo ya dedicado a estudio
+        existing_exercise_time = 0  # Tiempo ya dedicado a ejercicio
+        
         for event in events:
             try:
                 # Manejar diferentes formatos de fecha
@@ -76,10 +79,41 @@ class AIOrganizer:
                     end_time = end_time.replace(tzinfo=tz.utc)
                 
                 if event_date.date() == target_date.date():
+                    event_duration = (end_time - event_date).total_seconds() / 60  # minutos
+                    event_type = event.get('type', '').lower()
+                    event_title = event.get('title', '').lower()
+                    event_description = event.get('description', '').lower()
+                    
+                    # Contar tiempo de eventos existentes según tipo
+                    # Para eventos importados, analizar el contenido
+                    if event_type == 'importado':
+                        # Detectar si es ejercicio por palabras clave
+                        exercise_keywords = ['correr', 'ejercicio', 'gym', 'deporte', 'yoga', 'bailar', 
+                                           'nadar', 'caminar', 'entrenar', 'fitness', 'exercise']
+                        # Detectar si es estudio por palabras clave
+                        study_keywords = ['estudio', 'estudiar', 'leer', 'material', 'tarea', 'homework',
+                                        'study', 'clase', 'curso', 'aprender', 'práctica']
+                        
+                        is_exercise = any(keyword in event_title or keyword in event_description 
+                                        for keyword in exercise_keywords)
+                        is_study = any(keyword in event_title or keyword in event_description 
+                                     for keyword in study_keywords)
+                        
+                        if is_exercise:
+                            existing_exercise_time += event_duration
+                        elif is_study:
+                            existing_study_time += event_duration
+                    elif event_type in ['obligatorio', 'trabajo']:
+                        existing_study_time += event_duration
+                    elif event_type in ['recreativo', 'personal']:
+                        existing_exercise_time += event_duration
+                    
                     day_events.append({
                         'start': event_date,
                         'end': end_time,
-                        'title': event['title']
+                        'title': event['title'],
+                        'type': event_type,
+                        'duration': event_duration
                     })
             except (ValueError, KeyError) as e:
                 print(f"⚠️  Error procesando evento {event.get('title', 'Sin título')}: {e}")
@@ -133,7 +167,9 @@ class AIOrganizer:
             'target_date': target_date,
             'existing_events': day_events,
             'free_slots': free_slots,
-            'total_free_time': sum(slot['duration'] for slot in free_slots)
+            'total_free_time': sum(slot['duration'] for slot in free_slots),
+            'existing_study_time': existing_study_time,
+            'existing_exercise_time': existing_exercise_time
         }
     
     def generate_suggestions(self, schedule_analysis: Dict[str, Any]) -> Dict[str, Any]:
@@ -142,41 +178,62 @@ class AIOrganizer:
         """
         free_slots = schedule_analysis['free_slots']
         total_free_time = schedule_analysis['total_free_time']
+        existing_study_time = schedule_analysis.get('existing_study_time', 0)
+        existing_exercise_time = schedule_analysis.get('existing_exercise_time', 0)
         
         if total_free_time < 60:  # Menos de 1 hora libre
             return {
                 'success': False,
                 'message': 'No hay suficiente tiempo libre para organizar actividades (mínimo 1 hora)',
-                'suggestions': []
+                'suggestions': [],
+                'existing_study_time': existing_study_time,
+                'existing_exercise_time': existing_exercise_time
             }
         
-        # Calcular tiempo disponible para cada tipo de actividad
-        recommended_study_time = min(self.health_recommendations['study']['daily_hours'] * 60, 
-                                   total_free_time * 0.6)  # 60% para estudio máximo
-        recommended_exercise_time = min(self.health_recommendations['exercise']['daily_hours'] * 60, 
-                                      total_free_time * 0.4)  # 40% para ejercicio máximo
+        # Calcular tiempo TOTAL recomendado (en minutos)
+        total_recommended_study = self.health_recommendations['study']['daily_hours'] * 60
+        total_recommended_exercise = self.health_recommendations['exercise']['daily_hours'] * 60
+        
+        # Calcular cuánto tiempo FALTA para cumplir las metas
+        remaining_study_time = max(0, total_recommended_study - existing_study_time)
+        remaining_exercise_time = max(0, total_recommended_exercise - existing_exercise_time)
+        
+        # Ajustar según tiempo libre disponible
+        recommended_study_time = min(remaining_study_time, total_free_time * 0.6)
+        recommended_exercise_time = min(remaining_exercise_time, total_free_time * 0.4)
         
         suggestions = []
         
-        # Generar sugerencias de ejercicio
-        exercise_suggestions = self._generate_exercise_suggestions(
-            free_slots, recommended_exercise_time
-        )
-        suggestions.extend(exercise_suggestions)
+        # Generar sugerencias de ejercicio solo si falta tiempo
+        if remaining_exercise_time > 0:
+            exercise_suggestions = self._generate_exercise_suggestions(
+                free_slots, recommended_exercise_time
+            )
+            suggestions.extend(exercise_suggestions)
         
-        # Generar sugerencias de estudio
-        study_suggestions = self._generate_study_suggestions(
-            free_slots, recommended_study_time
-        )
-        suggestions.extend(study_suggestions)
+        # Generar sugerencias de estudio solo si falta tiempo
+        if remaining_study_time > 0:
+            study_suggestions = self._generate_study_suggestions(
+                free_slots, recommended_study_time
+            )
+            suggestions.extend(study_suggestions)
         
         return {
             'success': True,
             'analysis': schedule_analysis,
             'total_free_time': total_free_time,
+            'existing_study_time': existing_study_time,
+            'existing_exercise_time': existing_exercise_time,
+            'total_recommended_study': total_recommended_study,
+            'total_recommended_exercise': total_recommended_exercise,
             'recommended_study_time': recommended_study_time,
             'recommended_exercise_time': recommended_exercise_time,
-            'suggestions': suggestions
+            'suggestions': suggestions,
+            'message': self._generate_completion_message(
+                existing_study_time, existing_exercise_time,
+                total_recommended_study, total_recommended_exercise,
+                len(suggestions)
+            )
         }
     
     def _generate_exercise_suggestions(self, free_slots: List[Dict], target_minutes: float) -> List[Dict]:
@@ -298,6 +355,36 @@ class AIOrganizer:
                     remaining_time -= final_duration
         
         return suggestions
+    
+    def _generate_completion_message(
+        self, 
+        existing_study: float, 
+        existing_exercise: float,
+        recommended_study: float, 
+        recommended_exercise: float,
+        suggestions_count: int
+    ) -> str:
+        """
+        Genera un mensaje motivacional basado en el cumplimiento de metas
+        """
+        study_percent = (existing_study / recommended_study * 100) if recommended_study > 0 else 0
+        exercise_percent = (existing_exercise / recommended_exercise * 100) if recommended_exercise > 0 else 0
+        
+        if study_percent >= 100 and exercise_percent >= 100:
+            return "¡Felicitaciones! Ya cumpliste tus metas de estudio y ejercicio del día 🎉"
+        elif study_percent >= 100:
+            return f"✅ Meta de estudio cumplida. Te falta ejercicio ({exercise_percent:.0f}% completado)"
+        elif exercise_percent >= 100:
+            return f"✅ Meta de ejercicio cumplida. Te falta estudio ({study_percent:.0f}% completado)"
+        elif suggestions_count == 0:
+            return "Ya tienes un buen progreso, pero no hay espacio para más actividades hoy"
+        else:
+            missing_parts = []
+            if study_percent < 100:
+                missing_parts.append(f"estudio ({study_percent:.0f}%)")
+            if exercise_percent < 100:
+                missing_parts.append(f"ejercicio ({exercise_percent:.0f}%)")
+            return f"Selecciona actividades para completar: {', '.join(missing_parts)}"
     
     def create_ai_events(self, confirmed_suggestions: List[Dict]) -> List[Dict[str, Any]]:
         """

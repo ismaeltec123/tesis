@@ -78,7 +78,7 @@ class _EnhancedAIDialogState extends State<EnhancedAIDialog> with SingleTickerPr
         }
       } else {
         setState(() {
-          _statusMessage = 'Sistema Enhanced AI no disponible. Verifica que el servidor esté corriendo en puerto 8004.';
+          _statusMessage = 'Sistema Enhanced AI no disponible. Verifica que el servidor esté corriendo en puerto 8001.';
         });
       }
     } catch (e) {

@@ -18,6 +18,9 @@ dependencies:
   table_calendar: ^3.0.9
   http: ^1.1.0
   fl_chart: ^0.64.0
+  file_picker: ^8.0.0
+  shared_preferences: ^2.2.0
+  http_parser: ^4.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

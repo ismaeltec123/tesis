@@ -1,0 +1,162 @@
+{
+  "user_id": "test_user_aprendiendo",
+  "events_history": [
+    {
+      "id": "evt_001",
+      "date": "2025-11-20T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Estudiar Cálculo"
+    },
+    {
+      "id": "evt_002",
+      "date": "2025-11-20T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Desarrollar backend"
+    },
+    {
+      "id": "evt_003",
+      "date": "2025-11-21T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Gimnasio"
+    },
+    {
+      "id": "evt_004",
+      "date": "2025-11-21T20:00:00Z",
+      "status": "pendiente",
+      "type": "estudio",
+      "title": "Leer papers",
+      "reschedule_reason": "cansado"
+    },
+    {
+      "id": "evt_005",
+      "date": "2025-11-22T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Estudiar ML"
+    },
+    {
+      "id": "evt_006",
+      "date": "2025-11-23T15:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Code review"
+    },
+    {
+      "id": "evt_007",
+      "date": "2025-11-24T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Matemáticas"
+    },
+    {
+      "id": "evt_008",
+      "date": "2025-11-25T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Sprint planning"
+    },
+    {
+      "id": "evt_009",
+      "date": "2025-11-26T09:00:00Z",
+      "status": "cancelado",
+      "type": "ejercicio",
+      "title": "Correr",
+      "reschedule_reason": "clima_malo"
+    },
+    {
+      "id": "evt_010",
+      "date": "2025-11-27T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Programación"
+    },
+    {
+      "id": "evt_011",
+      "date": "2025-11-28T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Desarrollar API"
+    },
+    {
+      "id": "evt_012",
+      "date": "2025-11-29T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Gimnasio"
+    },
+    {
+      "id": "evt_013",
+      "date": "2025-11-30T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Estudiar algoritmos"
+    },
+    {
+      "id": "evt_014",
+      "date": "2025-12-01T15:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Meeting"
+    },
+    {
+      "id": "evt_015",
+      "date": "2025-12-02T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Estadística"
+    },
+    {
+      "id": "evt_016",
+      "date": "2025-12-03T14:00:00Z",
+      "status": "pendiente",
+      "type": "trabajo",
+      "title": "Documentación",
+      "reschedule_reason": "no_tuve_tiempo"
+    },
+    {
+      "id": "evt_017",
+      "date": "2025-12-04T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Correr"
+    },
+    {
+      "id": "evt_018",
+      "date": "2025-12-05T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Física cuántica"
+    },
+    {
+      "id": "evt_019",
+      "date": "2025-12-06T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Implementar feature"
+    },
+    {
+      "id": "evt_020",
+      "date": "2025-12-07T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Machine Learning"
+    },
+    {
+      "id": "evt_021",
+      "date": "2025-12-08T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Gimnasio"
+    },
+    {
+      "id": "evt_022",
+      "date": "2025-12-09T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Cálculo avanzado"
+    }
+  ]
+}

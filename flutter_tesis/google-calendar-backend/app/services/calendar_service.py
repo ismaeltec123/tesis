@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Any
 from googleapiclient.errors import HttpError
 from app.auth.google_oauth import GoogleAuthService
@@ -7,6 +7,14 @@ from app.models.event_models import EventResponse
 class GoogleCalendarService:
     def __init__(self):
         self.auth_service = GoogleAuthService()
+    
+    def has_valid_credentials(self) -> bool:
+        """Verifica si hay credenciales válidas de Google"""
+        try:
+            service = self.auth_service.get_calendar_service()
+            return service is not None
+        except Exception:
+            return False
         
     def get_service(self):
         """Obtiene el servicio de Google Calendar"""
@@ -100,27 +108,45 @@ class GoogleCalendarService:
     def _convert_to_google_format(self, event_data: Dict[str, Any]) -> Dict[str, Any]:
         """Convierte el formato de evento interno al formato de Google Calendar"""
         
-        # Extraer fechas
+        # Si ya tiene el formato de Google Calendar (con 'start' y 'end' como dict), devolverlo directamente
+        if isinstance(event_data.get('start'), dict) and isinstance(event_data.get('end'), dict):
+            print(f"📅 Evento ya en formato Google Calendar: {event_data.get('summary', 'Sin título')}")
+            return event_data
+        
+        # Extraer fechas del formato interno
         start_time = event_data.get('date')
         end_time = event_data.get('end_time')
         
+        # Validar que las fechas existan
+        if not start_time:
+            raise ValueError(f"Evento '{event_data.get('title', 'Sin título')}' no tiene fecha de inicio")
+        
         if isinstance(start_time, str):
             start_time = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
-        if isinstance(end_time, str):
+        
+        # Si no hay end_time, usar start_time + 1 hora por defecto
+        if not end_time:
+            end_time = start_time + timedelta(hours=1)
+            print(f"⚠️  Evento '{event_data.get('title')}' sin end_time, usando +1 hora")
+        elif isinstance(end_time, str):
             end_time = datetime.fromisoformat(end_time.replace('Z', '+00:00'))
         
         google_event = {
-            'summary': event_data.get('title', ''),
+            'summary': event_data.get('title', event_data.get('summary', '')),
             'description': event_data.get('description', ''),
             'start': {
                 'dateTime': start_time.isoformat(),
-                'timeZone': 'America/Mexico_City',
+                'timeZone': 'America/Lima',
             },
             'end': {
                 'dateTime': end_time.isoformat(),
-                'timeZone': 'America/Mexico_City',
+                'timeZone': 'America/Lima',
             },
         }
+        
+        # Agregar location si existe
+        if event_data.get('location'):
+            google_event['location'] = event_data.get('location')
         
         # Agregar recordatorio si está habilitado
         if event_data.get('reminder', False):

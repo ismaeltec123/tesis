@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import '../services/ai_service.dart';
+import '../models/event_model.dart';
+import 'weekly_goals_card.dart';
 
 class AIOrganizerDialog extends StatefulWidget {
   final DateTime selectedDate;
-  final Function onEventsCreated;
+  final Function(List<Map<String, dynamic>>) onEventsCreated;
+  final List<EventModel> allEvents;
 
   const AIOrganizerDialog({
     Key? key,
     required this.selectedDate,
     required this.onEventsCreated,
+    required this.allEvents,
   }) : super(key: key);
 
   @override
@@ -90,8 +94,8 @@ class _AIOrganizerDialogState extends State<AIOrganizerDialog> {
       final result = await _aiService.confirmSuggestions(_selectedSuggestions);
       
       if (result['success']) {
-        // Notificar que se crearon eventos
-        widget.onEventsCreated();
+        // Notificar que se crearon eventos con la lista de sugerencias
+        widget.onEventsCreated(_selectedSuggestions);
         
         Navigator.of(context).pop();
         
@@ -163,6 +167,220 @@ class _AIOrganizerDialogState extends State<AIOrganizerDialog> {
       default:
         return Icons.event;
     }
+  }
+
+  int _getSelectedDuration(String type) {
+    int totalMinutes = 0;
+    for (var suggestion in _selectedSuggestions) {
+      if (suggestion['type'] == type) {
+        totalMinutes += (suggestion['duration'] as int);
+      }
+    }
+    return totalMinutes;
+  }
+
+  int _getExistingDuration(String type) {
+    if (_analysisData == null) return 0;
+    
+    if (type == 'estudio') {
+      return (_analysisData!['existing_study_time'] ?? 0).toInt();
+    } else if (type == 'recreativo') {
+      return (_analysisData!['existing_exercise_time'] ?? 0).toInt();
+    }
+    return 0;
+  }
+
+  int _getTotalRecommended(String type) {
+    if (_analysisData == null) return 0;
+    
+    if (type == 'estudio') {
+      return (_analysisData!['total_recommended_study'] ?? 
+              _analysisData!['recommended_study_time'] ?? 0).toInt();
+    } else if (type == 'recreativo') {
+      return (_analysisData!['total_recommended_exercise'] ?? 
+              _analysisData!['recommended_exercise_time'] ?? 0).toInt();
+    }
+    return 0;
+  }
+
+  Map<String, dynamic>? _getCompletionStatus() {
+    if (_analysisData == null) return null;
+    
+    // Si hay un mensaje del backend, usarlo
+    if (_analysisData!.containsKey('message') && _analysisData!['message'] != null) {
+      final message = _analysisData!['message'] as String;
+      final isComplete = message.contains('Felicitaciones') || message.contains('cumpliste');
+      
+      return {
+        'isComplete': isComplete,
+        'message': message,
+      };
+    }
+    
+    // Fallback al cálculo local si no hay mensaje del backend
+    final totalRecommendedStudy = _getTotalRecommended('estudio');
+    final totalRecommendedExercise = _getTotalRecommended('recreativo');
+    final existingStudy = _getExistingDuration('estudio');
+    final existingExercise = _getExistingDuration('recreativo');
+    final selectedStudy = _getSelectedDuration('estudio');
+    final selectedExercise = _getSelectedDuration('recreativo');
+    
+    final totalStudy = existingStudy + selectedStudy;
+    final totalExercise = existingExercise + selectedExercise;
+    
+    final studyComplete = totalStudy >= totalRecommendedStudy;
+    final exerciseComplete = totalExercise >= totalRecommendedExercise;
+    
+    if (studyComplete && exerciseComplete) {
+      return {
+        'isComplete': true,
+        'message': '¡Excelente! Cumples con todas las metas recomendadas 🎉',
+      };
+    } else if (studyComplete || exerciseComplete) {
+      return {
+        'isComplete': false,
+        'message': 'Buen progreso. Intenta agregar más ${!studyComplete ? "estudio" : "ejercicio"} 💪',
+      };
+    } else if (_selectedSuggestions.isEmpty) {
+      return {
+        'isComplete': false,
+        'message': 'Selecciona actividades para alcanzar tus metas diarias 📚',
+      };
+    } else {
+      return {
+        'isComplete': false,
+        'message': 'Vas por buen camino, sigue agregando actividades 💪',
+      };
+    }
+  }
+
+  Widget _buildMetricRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: color),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProgressMetric({
+    required IconData icon,
+    required String label,
+    required int recommended,
+    required int selected,
+    required Color color,
+  }) {
+    final existing = label == 'Estudio' 
+        ? _getExistingDuration('estudio') 
+        : _getExistingDuration('recreativo');
+    final totalRecommended = label == 'Estudio'
+        ? _getTotalRecommended('estudio')
+        : _getTotalRecommended('recreativo');
+    
+    final total = existing + selected;
+    final actualRecommended = totalRecommended > 0 ? totalRecommended : recommended;
+    final percentage = actualRecommended > 0 ? (total / actualRecommended).clamp(0.0, 1.0) : 0.0;
+    final isComplete = total >= actualRecommended;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 20, color: color),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (existing > 0) ...[
+                  Text(
+                    '${_formatDuration(existing)} ya programado',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                ],
+                Text(
+                  '${_formatDuration(total)} / ${_formatDuration(actualRecommended)}',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: isComplete ? Colors.green : color,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Stack(
+          children: [
+            // Background bar
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: 1.0,
+                backgroundColor: Colors.grey[300],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[300]!),
+                minHeight: 8,
+              ),
+            ),
+            // Existing time bar
+            if (existing > 0)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: (existing / actualRecommended).clamp(0.0, 1.0),
+                  backgroundColor: Colors.transparent,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    color.withValues(alpha: 0.5),
+                  ),
+                  minHeight: 8,
+                ),
+              ),
+            // Total bar (existing + selected)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: percentage,
+                backgroundColor: Colors.transparent,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  isComplete ? Colors.green : color,
+                ),
+                minHeight: 8,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   @override
@@ -354,45 +572,129 @@ class _AIOrganizerDialogState extends State<AIOrganizerDialog> {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Analysis summary
-        if (_analysisData != null) ...[
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Analysis summary with progress indicators
+          if (_analysisData != null) ...[
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.purple[50],
-              borderRadius: BorderRadius.circular(8),
+              gradient: LinearGradient(
+                colors: [Colors.purple[50]!, Colors.purple[100]!],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.purple[200]!, width: 1),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Análisis del día',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                Row(
+                  children: [
+                    Icon(Icons.analytics, color: Colors.purple[700], size: 24),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Análisis del día',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.purple,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                
+                // Free time
+                _buildMetricRow(
+                  icon: Icons.event_available,
+                  label: 'Tiempo libre total',
+                  value: _formatDuration(_analysisData!['total_free_time'].toInt()),
+                  color: Colors.blue,
+                ),
+                const SizedBox(height: 12),
+                
+                // Study time with progress
+                _buildProgressMetric(
+                  icon: Icons.school,
+                  label: 'Estudio',
+                  recommended: _analysisData!['recommended_study_time'].toInt(),
+                  selected: _getSelectedDuration('estudio'),
+                  color: Colors.green,
+                ),
+                const SizedBox(height: 12),
+                
+                // Exercise time with progress
+                _buildProgressMetric(
+                  icon: Icons.fitness_center,
+                  label: 'Ejercicio',
+                  recommended: _analysisData!['recommended_exercise_time'].toInt(),
+                  selected: _getSelectedDuration('recreativo'),
+                  color: Colors.orange,
+                ),
+                
+                // Motivational message
+                if (_getCompletionStatus() != null) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: _getCompletionStatus()!['isComplete']
+                          ? Colors.green[100]
+                          : Colors.orange[100],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: _getCompletionStatus()!['isComplete']
+                            ? Colors.green[300]!
+                            : Colors.orange[300]!,
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          _getCompletionStatus()!['isComplete']
+                              ? Icons.check_circle
+                              : Icons.info,
+                          color: _getCompletionStatus()!['isComplete']
+                              ? Colors.green[700]
+                              : Colors.orange[700],
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _getCompletionStatus()!['message'],
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: _getCompletionStatus()!['isComplete']
+                                  ? Colors.green[900]
+                                  : Colors.orange[900],
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Tiempo libre total: ${_formatDuration(_analysisData!['total_free_time'].toInt())}',
-                  style: const TextStyle(fontSize: 14),
-                ),
-                Text(
-                  'Estudio recomendado: ${_formatDuration(_analysisData!['recommended_study_time'].toInt())}',
-                  style: const TextStyle(fontSize: 14),
-                ),
-                Text(
-                  'Ejercicio recomendado: ${_formatDuration(_analysisData!['recommended_exercise_time'].toInt())}',
-                  style: const TextStyle(fontSize: 14),
-                ),
+                ],
               ],
             ),
           ),
           const SizedBox(height: 16),
         ],
+
+        // Panel de Metas Semanales
+        WeeklyGoalsCard(
+          events: widget.allEvents,
+          weekStart: _getWeekStart(widget.selectedDate),
+          showExercise: false, // Solo mostrar estudio y recreativo
+        ),
+        const SizedBox(height: 16),
 
         // Suggestions title
         const Text(
@@ -405,10 +707,11 @@ class _AIOrganizerDialogState extends State<AIOrganizerDialog> {
         const SizedBox(height: 12),
 
         // Suggestions list
-        Expanded(
-          child: ListView.builder(
-            itemCount: _suggestions.length,
-            itemBuilder: (context, index) {
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _suggestions.length,
+          itemBuilder: (context, index) {
               final suggestion = _suggestions[index];
               final isSelected = _selectedSuggestions.any(
                 (s) => s['title'] == suggestion['title'],
@@ -484,8 +787,14 @@ class _AIOrganizerDialogState extends State<AIOrganizerDialog> {
               );
             },
           ),
-        ),
       ],
+      ),
     );
+  }
+
+  /// Obtiene el lunes de la semana de una fecha dada
+  DateTime _getWeekStart(DateTime date) {
+    int weekday = date.weekday;
+    return date.subtract(Duration(days: weekday - 1));
   }
 }

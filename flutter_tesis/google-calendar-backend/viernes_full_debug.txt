@@ -1,0 +1,1567 @@
+﻿
+­ƒÜÇ IMPORTADOR R├üPIDO DE HORARIOS TECSUP
+========================================
+
+.\importar_horario.bat : [INFO] \U0001f680 INICIANDO extract_text_from_image...
+En línea: 1 Carácter: 1
++ .\importar_horario.bat test_images\imagen_2.png --verbose 2>&1 | Out- ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([INFO] \U0001f6...t_from_image...:String) [], 
+    RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[INFO] 2\ufe0f\u20e3 Abriendo imagen desde bytes...
+[INFO] \U0001f4f8 Imagen cargada: PNG (1014, 725) (RGBA)
+[INFO] 3\ufe0f\u20e3 \U0001f3a8 Aplicando preprocesamiento AGRESIVO para horarios TECSUP 
+con fondos de colores...
+[INFO] \U0001f504 RGBA \u2192 RGB con fondo blanco
+[INFO] \U0001f50d Escalado a 2000x1429 (1.97x)
+[INFO] \U0001f3a8 Eliminando fondos de colores claros (amarillo, rosa, verde)...
+[INFO] \u26aa 2745726/2858000 pÝxeles (96.1%) convertidos a blanco
+[INFO] \u26ab Convertido a escala de grises
+[INFO] \u2728 CLAHE aplicado (ecualizaci¾n adaptativa)
+[INFO] \U0001f3af Aplicando umbralizaci¾n hÝbrida (adaptativa bloques MUY grandes)
+[INFO] \U0001f4cf Umbral Otsu de referencia: 181.0
+[INFO] \ufffd Threshold adaptativo aplicado (bloques 51x51, C=12)
+[INFO] \U0001f4ca PÝxeles: 2745727 blancos, 112273 negros
+[INFO] \U0001f9f9 MorfologÝa aplicada (apertura)
+[INFO] \U0001f4be Imagen procesada guardada en: 
+C:\sdk\tesis\flutter_tesis\google-calendar-backend\temp_processed_image.png
+[INFO] \u2705 Preprocesamiento completo - imagen binarizada
+[INFO] \U0001f4d0 Dimensiones finales: (1429, 2000, 3)
+[INFO] 1\ufe0f\u20e3 Obteniendo instancia de OCR...
+[INFO] \U0001f504 Inicializando PaddleOCR (primera vez, puede tardar algunos minutos)...
+[INFO] \U0001f4e6 M¾dulo PaddleOCR importado correctamente
+[INFO] \u2699\ufe0f Creando instancia de PaddleOCR con lang='es'...
+INFORMACIÓN: no se pudo encontrar ningún archivo para los patrones dados.
+C:\sdk\tesis\flutter_tesis\.venv\Lib\site-packages\paddle\utils\cpp_extension\extension_uti
+ls.py:718: UserWarning: No ccache found. Please be aware that recompiling all source files 
+may be required. You can download and install ccache from: 
+https://github.com/ccache/ccache/blob/master/doc/INSTALL.md
+  warnings.warn(warning_message)
+[32mCreating model: ('PP-LCNet_x1_0_doc_ori', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the 
+directory manually: `C:\Users\ismae\.paddlex\official_models\PP-LCNet_x1_0_doc_ori`.[0m
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1031 13:38:40.741952  4800 onednn_context.cc:81] oneDNN v3.6.2
+[32mCreating model: ('UVDoc', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the 
+directory manually: `C:\Users\ismae\.paddlex\official_models\UVDoc`.[0m
+[32mCreating model: ('PP-OCRv5_server_det', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the 
+directory manually: `C:\Users\ismae\.paddlex\official_models\PP-OCRv5_server_det`.[0m
+[32mCreating model: ('latin_PP-OCRv5_mobile_rec', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the 
+directory manually: 
+`C:\Users\ismae\.paddlex\official_models\latin_PP-OCRv5_mobile_rec`.[0m
+Cargando imagen: test_images\imagen_2.png
+Tama├▒o: 91.7 KB
+Ejecutando OCR...
+
+=== DEBUG OCR ===
+Tipo de result: <class 'list'>
+Longitud de result: 1
+Result es LISTA/TUPLA, longitud: 1
+Tipo de result[0]: <class 'paddlex.inference.pipelines.ocr.result.OCRResult'>
+result[0] es dict con claves: ['input_path', 'page_index', 'doc_preprocessor_res', 'dt_polys', 'model_settings', 'text_det_params', 'text_type', 'text_rec_score_thresh', 'return_word_box', 'rec_texts', 'rec_scores', 'rec_polys', 'vis_fonts', 'textline_orientation_angles', 'rec_boxes']
+Encontrados 194 textos en result[0]
+  1. 'HORARIOS PFR 2025-2' (conf: 1.00)
+  2. '1C21(A-B) - Primer Semestre - Gesti├│n y Mantenimiento de Maquinaria Pesada - Grupo A-B' (conf: 0.99)
+  3. 'ASOCIACION TECSUP NRO 2, Urb Monterrey D8 JLBYR, Arequipa' (conf: 0.99)
+  4. '5' (conf: 1.00)
+  5. '6' (conf: 1.00)
+  6. '7' (conf: 1.00)
+  7. '8' (conf: 1.00)
+  8. '9' (conf: 1.00)
+  9. '10' (conf: 1.00)
+  10. '11' (conf: 1.00)
+  11. '12' (conf: 0.99)
+  12. '13' (conf: 1.00)
+  13. '14' (conf: 1.00)
+  14. '15' (conf: 1.00)
+  15. '16' (conf: 1.00)
+  16. '17' (conf: 1.00)
+  17. '2' (conf: 1.00)
+  18. '3' (conf: 1.00)
+  19. '4' (conf: 1.00)
+  20. '18' (conf: 1.00)
+  21. '19' (conf: 1.00)
+  22. '0' (conf: 0.98)
+  23. 'e' (conf: 0.62)
+  24. '8.50' (conf: 0.99)
+  25. '9.40' (conf: 0.83)
+  26. '10.30' (conf: 0.81)
+  27. '1:.20' (conf: 0.94)
+  28. ':2.10' (conf: 0.98)
+  29. ':3.C0' (conf: 0.90)
+  30. ':3.50' (conf: 0.89)
+  31. ':4.10' (conf: 0.65)
+  32. ':5.30' (conf: 0.96)
+  33. ':6.20' (conf: 0.90)
+  34. '17.12' (conf: 0.93)
+  35. '18.0' (conf: 1.00)
+  36. '8.00' (conf: 0.99)
+  37. '18.50' (conf: 0.95)
+  38. ':9.40' (conf: 0.92)
+  39. '7.ic' (conf: 0.89)
+  40. '2.30' (conf: 1.00)
+  41. '6 20' (conf: 0.96)
+  42. '21 20' (conf: 0.98)
+  43. '22.10' (conf: 0.86)
+  44. '10.00' (conf: 0.79)
+  45. '::.20' (conf: 0.74)
+  46. '12.10' (conf: 0.99)
+  47. ':3.00' (conf: 0.84)
+  48. ':3.50' (conf: 0.95)
+  49. ':4.40' (conf: 0.89)
+  50. ':5.30' (conf: 0.91)
+  51. '6.20' (conf: 0.96)
+  52. ':7.10' (conf: 0.86)
+  53. '18.0Ôé¼' (conf: 0.85)
+  54. '18.50' (conf: 0.80)
+  55. '8 50' (conf: 0.80)
+  56. '9.40' (conf: 0.99)
+  57. '19.40' (conf: 0.90)
+  58. '8.0C' (conf: 0.74)
+  59. '20.30' (conf: 0.91)
+  60. '21.20' (conf: 1.00)
+  61. '7.10' (conf: 0.99)
+  62. '22.10' (conf: 0.99)
+  63. '23.00' (conf: 0.98)
+  64. '313' (conf: 0.70)
+  65. '313' (conf: 0.96)
+  67. 'OnYCaLTEO' (conf: 0.75)
+  68. 'CAYETEO' (conf: 0.91)
+  69. 'w' (conf: 0.18)
+  70. '.0.' (conf: 0.83)
+  71. 'MocdeTaLTAL' (conf: 0.91)
+  74. 'Lunes' (conf: 0.99)
+  75. '313' (conf: 0.60)
+  76. '313' (conf: 0.92)
+  77. 'OyCALTEO' (conf: 0.84)
+  78. 'CAYEATEO' (conf: 0.84)
+  79. 'w' (conf: 0.19)
+  80. 'a' (conf: 0.58)
+  81. 'MocdeTaLTAL' (conf: 0.85)
+  82. 'Cp.0q.' (conf: 0.82)
+  83. 'Mms' (conf: 0.73)
+  85. 'M' (conf: 0.28)
+  86. 'A' (conf: 0.93)
+  87. 'A2$3' (conf: 0.95)
+  88. 'A313' (conf: 0.85)
+  89. 'A313' (conf: 0.99)
+  90. 'Co.0q01' (conf: 0.63)
+  91. 'MecdaTaLTAL' (conf: 0.89)
+  92. 'CAYE TAL' (conf: 0.77)
+  93. 'Derer.TE' (conf: 0.71)
+  95. 'o' (conf: 0.79)
+  96. 'D:Par.LAB' (conf: 0.63)
+  97. 'L.' (conf: 0.77)
+  98. 'o' (conf: 0.59)
+  100. 'Martes' (conf: 0.93)
+  101. '$' (conf: 0.63)
+  102. 'A' (conf: 0.90)
+  103. 'A2S3' (conf: 0.87)
+  104. 'A313' (conf: 0.99)
+  105. 'A313' (conf: 0.99)
+  106. 'Co.0qa1' (conf: 0.65)
+  107. 'MecdeTaLTAL' (conf: 0.95)
+  108. 'CYETAL' (conf: 0.68)
+  109. '.TE' (conf: 0.77)
+  110. 'm:' (conf: 0.66)
+  111. 'D:Par.LA' (conf: 0.67)
+  112. 'o' (conf: 0.97)
+  113. 'Lu.m' (conf: 0.88)
+  116. 'At' (conf: 0.84)
+  117. 'AtH' (conf: 0.83)
+  118. 'A109' (conf: 0.96)
+  119. 'm' (conf: 0.62)
+  120. 'TictalbpOrayisc.TmIO' (conf: 0.68)
+  121. 'I6edseoOn' (conf: 0.40)
+  122. 'E.TEO' (conf: 0.83)
+  123. 'Joe. Gullernaz' (conf: 0.72)
+  124. 'DatTH' (conf: 0.38)
+  125. '.' (conf: 0.67)
+  126. 'Mi├®rcoles' (conf: 0.96)
+  127. 'AtH' (conf: 0.71)
+  128. 'At4' (conf: 0.81)
+  129. '109' (conf: 1.00)
+  130. 'n' (conf: 0.46)
+  131. 'TiotelbxpOrayiuc.TmoO' (conf: 0.63)
+  132. 'TeodelbipOrvdac TN' (conf: 0.67)
+  133. 'E.TEO' (conf: 0.88)
+  134. 'a' (conf: 0.40)
+  136. 'DaThT' (conf: 0.38)
+  138. 'A102' (conf: 0.98)
+  139. 'A' (conf: 0.98)
+  140. 'A509' (conf: 0.82)
+  141. 'OndC.LA' (conf: 0.75)
+  143. 'SmMu' (conf: 0.51)
+  145. 'M6' (conf: 0.49)
+  146. 'TocdaE.Pes LAB' (conf: 0.72)
+  147. 'a' (conf: 0.92)
+  148. 'G.C' (conf: 0.77)
+  149. '..' (conf: 0.72)
+  150. 'Jueves' (conf: 1.00)
+  151. 'M5' (conf: 0.80)
+  152. 'ToccoE.Pos' (conf: 0.69)
+  153. 'A' (conf: 0.93)
+  154. 'A509' (conf: 0.83)
+  155. '.C' (conf: 0.65)
+  156. 'm' (conf: 0.34)
+  158. 'A12' (conf: 0.90)
+  159. 'OndyC.LAB' (conf: 0.80)
+  160. 'a' (conf: 0.54)
+  161. 'Mam' (conf: 0.69)
+  162. 'S.a' (conf: 0.71)
+  163. 'A109' (conf: 0.68)
+  164. 'SmMe' (conf: 0.50)
+  165. 'TEquP.TED' (conf: 0.89)
+  166. 'A1f2' (conf: 0.81)
+  167. 'E0.LAB' (conf: 0.86)
+  168. '┬ñ' (conf: 0.68)
+  169. 'Viemes' (conf: 0.90)
+  171. 'WI.Coa' (conf: 0.67)
+  172. 'A109' (conf: 0.82)
+  173. 'A1$2' (conf: 0.90)
+  174. 'EOLAS' (conf: 0.62)
+  175. 'A' (conf: 0.99)
+  176. 'TEquPs.TEO' (conf: 0.83)
+  177. 'WI.Co' (conf: 0.70)
+  178. '"' (conf: 0.61)
+  181. 'ProcoDatLA' (conf: 0.78)
+  182. 'A' (conf: 0.55)
+  183. 'Stume' (conf: 0.48)
+  185. 'S├íbado' (conf: 1.00)
+  186. '"' (conf: 0.86)
+  187. '02' (conf: 0.86)
+  188. 'ProoeDa.LAB' (conf: 0.84)
+  189. 'a' (conf: 0.39)
+  190. 'EdLoayza' (conf: 0.60)
+  191. 'SutuIrte' (conf: 0.40)
+  192. 'Domingo' (conf: 0.96)
+  193. 'te' (conf: 0.33)
+  194. 'aSc Horarios en' (conf: 1.00)
+=== FIN DEBUG ===
+
+OCR detecto 177 elementos de texto
+Analizando estructura de horario TECSUP...
+
+=== PARSER TECSUP ===
+Total detecciones: 177
+
+  Buscando columnas 0-19 en encabezado (Y < 200)...
+  ÔÜá´©Å Solo se detectaron 0 columnas. Calculando posiciones estimadas...
+Columnas detectadas: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+  - Lunes detectado en Y=366
+  - Martes detectado en Y=528
+  - Mi├®rcoles detectado en Y=688
+  - Jueves detectado en Y=845
+  - Viernes detectado en Y=1000
+  - S├íbado detectado en Y=1157
+  - Domingo detectado en Y=1318
+D├¡as detectados: ['Lunes', 'Martes', 'Mi├®rcoles', 'Jueves', 'Viernes', 'S├íbado', 'Domingo']
+  - Lunes: {'impar_y': 406.0, 'par_y': 446.0}
+  - Martes: {'impar_y': 567.5, 'par_y': 607.5}
+  - Mi├®rcoles: {'impar_y': 727.5, 'par_y': 767.5}
+  - Jueves: {'impar_y': 885.0, 'par_y': 925.0}
+  - Viernes: {'impar_y': 1040.5, 'par_y': 1080.5}
+  - S├íbado: {'impar_y': 1197.0, 'par_y': 1237.0}
+  - Domingo: {'impar_y': 1358.0, 'par_y': 1398.0}
+
+
+  Filtrando 177 detecciones...
+  Columnas disponibles: 20
+  D├¡as disponibles: 7
+  Textos agrupados en 83 celdas
+    ? CELL: 'OnYCaLTEO' -> AULA83 at x=872, y=322, conf=0.75
+      ÔåÆ Columnas 6-7 (2 cols, ancho=178px) | 11:20-13:00
+    ? CELL: 'CAYETEO' -> AULA113 at x=1142, y=320, conf=0.91
+      ÔåÆ Columnas 10-11 (2 cols, ancho=170px) | 14:40-16:20
+    ? CELL: 'w .0.' -> AULA43 at x=434, y=347, conf=0.51
+      ÔåÆ Columnas 1-2 (2 cols, ancho=157px) | 07:10-08:50
+  + LUN IMP | 07:10-08:50 | AULA43 W 0 (TEO) [conf:0.51]
+    ? CELL: 'MocdeTaLTAL' -> AULA53 at x=560, y=346, conf=0.91
+      ÔåÆ Columnas 3-4 (2 cols, ancho=177px) | 08:50-10:30
+  + LUN IMP | 08:50-10:30 | AULA53 Mocdetaltal (TEO) [conf:0.91]
+    ? CELL: '313 a' -> AULA73 at x=750, y=393, conf=0.59
+      ÔåÆ Columnas 5-6 (2 cols, ancho=157px) | 10:30-12:10
+  + LUN IMP | 10:30-12:10 | AULA73 313 A (TEO) [conf:0.59]
+  + LUN PAR | 10:30-12:10 | AULA73 313 A (TEO) [conf:0.59]
+    ? CELL: 'OyCALTEO Mms' -> AULA84 at x=836, y=416, conf=0.79
+  + LUN IMP | 11:20-13:50 | AULA84 Oycalteo Mms (TEO) [conf:0.79]
+  + LUN PAR | 11:20-13:50 | AULA84 Oycalteo Mms (TEO) [conf:0.79]
+    ? CELL: 'CAYEATEO' -> AULA114 at x=1142, y=401, conf=0.84
+  + LUN IMP | 14:40-16:20 | AULA114 CAYEATEO (TEO) [conf:0.84]
+    ? CELL: 'w Cp.0q. M' -> AULA44 at x=436, y=436, conf=0.43
+  + LUN IMP | 07:10-08:50 | AULA44 W Cp 0Q M (TEO) [conf:0.43]
+  + LUN PAR | 07:10-08:50 | AULA44 W Cp 0Q M (TEO) [conf:0.43]
+    ? CELL: 'MocdeTaLTAL MecdaTaLTAL' -> AULA54 at x=560, y=444, conf=0.87
+  + LUN IMP | 08:50-10:30 | AULA54 Mocdetaltal Mecdataltal (TEO) [conf:0.87]
+  + LUN PAR | 08:50-10:30 | AULA54 Mocdetaltal Mecdataltal (TEO) [conf:0.87]
+  + LUN PAR | 10:30-12:10 | A2 A $3 (TEO) [conf:0.94]
+  + LUN IMP | 14:40-17:10 | A313 Derer Te O (TEO) [conf:0.84]
+  + LUN PAR | 14:40-17:10 | A313 Derer Te O (TEO) [conf:0.84]
+  + LUN PAR | 07:10-08:50 | AULA44 Co 0Q01 (TEO) [conf:0.63]
+  + LUN IMP | 11:20-13:50 | AULA84 CAYE L (TAL) [conf:0.77]
+  + LUN PAR | 11:20-13:50 | AULA84 CAYE L (TAL) [conf:0.77]
+  + LUN PAR | 15:30-17:10 | AULA124 D Par (LAB) [conf:0.63]
+  + MAR IMP | 14:40-17:10 | A313 O Te (TEO) [conf:0.84]
+  + MAR PAR | 14:40-17:10 | A313 O Te (TEO) [conf:0.84]
+  + MAR IMP | 07:10-08:50 | AULA45 $ Co 0Qa1 (TEO) [conf:0.64]
+  + MAR PAR | 07:10-08:50 | AULA45 $ Co 0Qa1 (TEO) [conf:0.64]
+  + MAR IMP | 10:30-12:10 | AULA75 A A2S3 (TEO) [conf:0.89]
+  + MAR IMP | 08:50-10:30 | AULA55 Mecdetaltal (TEO) [conf:0.95]
+  + MAR IMP | 11:20-13:50 | AULA85 Cyetal Lu M (TEO) [conf:0.78]
+  + MAR PAR | 11:20-13:50 | AULA85 Cyetal Lu M (TEO) [conf:0.78]
+  + MAR IMP | 15:30-17:10 | AULA125 D Par La (TEO) [conf:0.67]
+  + MAR IMP | 07:10-09:40 | AULA46 At Tictalbporayisc Tmio (TEO) [conf:0.76]
+  + MAR PAR | 07:10-09:40 | AULA46 At Tictalbporayisc Tmio (TEO) [conf:0.76]
+  + MAR IMP | 08:50-10:30 | AULA66 Ath I6Edseoon (TEO) [conf:0.62]
+  + MAR PAR | 08:50-10:30 | AULA66 Ath I6Edseoon (TEO) [conf:0.62]
+  + MAR IMP | 10:30-12:10 | A109 Clase A109 (TEO) [conf:0.90]
+  + MAR PAR | 10:30-12:10 | A109 Clase A109 (TEO) [conf:0.90]
+  + MI├ë IMP | 07:10-08:50 | AULA46 Joe Gullernaz Ath (TEO) [conf:0.71]
+  + MI├ë PAR | 07:10-08:50 | AULA46 Joe Gullernaz Ath (TEO) [conf:0.71]
+  + MI├ë IMP | 08:50-10:30 | AT4 Datth At4 (TEO) [conf:0.59]
+  + MI├ë PAR | 08:50-10:30 | AT4 Datth At4 (TEO) [conf:0.59]
+  + MI├ë IMP | 10:30-12:10 | AULA76 109 (TEO) [conf:0.83]
+  + MI├ë PAR | 10:30-12:10 | AULA76 109 (TEO) [conf:0.83]
+  + MI├ë IMP | 07:10-09:40 | A102 Tiotelbxporayiuc Tmoo A (TEO) [conf:0.67]
+  + MI├ë PAR | 07:10-09:40 | A102 Tiotelbxporayiuc Tmoo A (TEO) [conf:0.67]
+  + MI├ë IMP | 08:50-11:20 | AULA67 Teodelbiporvdac Tn Datht A (TEO) [conf:0.68]
+  + MI├ë PAR | 08:50-11:20 | AULA67 Teodelbiporvdac Tn Datht A (TEO) [conf:0.68]
+  + MI├ë IMP | 11:20-13:00 | AULA87 Clase Aula87 (TEO) [conf:0.88]
+  + MI├ë PAR | 11:20-12:10 | A509 Clase A509 (TEO) [conf:0.82]
+  + MI├ë IMP | 08:50-10:30 | AULA57 Ondc La Tocdae Pes (LAB) [conf:0.74]
+  + MI├ë PAR | 08:50-10:30 | AULA57 Ondc La Tocdae Pes (LAB) [conf:0.74]
+  + MI├ë IMP | 07:10-08:50 | M6 G C (TEO) [conf:0.68]
+  + MI├ë PAR | 07:10-08:50 | M6 G C (TEO) [conf:0.68]
+  + JUE IMP | 11:20-13:00 | A509 Clase A509 (TEO) [conf:0.78]
+  + JUE IMP | 08:50-10:30 | AULA58 Toccoe Pos Ondyc (LAB) [conf:0.74]
+  + JUE PAR | 08:50-10:30 | AULA58 Toccoe Pos Ondyc (LAB) [conf:0.74]
+  + JUE IMP | 07:10-08:50 | A12 C Mam (TEO) [conf:0.75]
+  + JUE PAR | 07:10-08:50 | A12 C Mam (TEO) [conf:0.75]
+  + JUE IMP | 07:10-09:40 | A109 Tequp Ted (TEO) [conf:0.78]
+  + JUE PAR | 07:10-09:40 | A109 Tequp Ted (TEO) [conf:0.78]
+  + JUE IMP | 08:50-10:30 | A1 A1F2 Wi Coa $2 (TEO) [conf:0.79]
+  + JUE PAR | 08:50-10:30 | A1 A1F2 Wi Coa $2 (TEO) [conf:0.79]
+  + VIE IMP | 10:30-12:10 | E0 EOLAS (LAB) [conf:0.74]
+  + VIE PAR | 10:30-12:10 | E0 EOLAS (LAB) [conf:0.74]
+  + VIE IMP | 07:10-09:40 | A109 Tequps (TEO) [conf:0.83]
+  + VIE PAR | 07:10-09:40 | A109 Tequps (TEO) [conf:0.83]
+  + VIE IMP | 08:50-10:30 | AULA610 Wi Co (TEO) [conf:0.70]
+  + VIE PAR | 08:50-10:30 | AULA510 Procodatla (TEO) [conf:0.78]
+  + S├üB IMP | 07:10-08:50 | AULA412 02 Edloayza (TEO) [conf:0.73]
+  + S├üB PAR | 07:10-08:50 | AULA412 02 Edloayza (TEO) [conf:0.73]
+  + S├üB IMP | 08:50-10:30 | AULA512 Prooeda (LAB) [conf:0.84]
+  + DOM PAR | 21:20-23:00 | AULA1814 Asc Horarios En (TEO) [conf:1.00]
+
+  Estad├¡sticas de filtrado:
+    - Filtrados por confianza (<0.25): 0
+    - Filtrados por posici├│n (encabezado): 31
+    - Con c├│digo de aula encontrado: 58
+    - Sin d├¡a cercano (>70px): 2
+    - Clases extra├¡das: 68
+
+TOTAL EXTRA├ìDO: 68 clases
+=== FIN PARSER ===
+
+
+============================================================
+OK: Importacion exitosa: 68 clases encontradas
+============================================================
+
+RESUMEN:
+  * Total clases: 68
+  * Semana Par: 32
+  * Semana Impar: 36
+
+CLASES EXTRAIDAS:
+   1. Lun IMP | 07:10-08:50 | AULA43 | TEO | W 0
+   2. Lun IMP | 08:50-10:30 | AULA53 | TEO | Mocdetaltal
+   3. Lun IMP | 10:30-12:10 | AULA73 | TEO | 313 A
+   4. Lun PAR | 10:30-12:10 | AULA73 | TEO | 313 A
+   5. Lun IMP | 11:20-13:50 | AULA84 | TEO | Oycalteo Mms
+   6. Lun PAR | 11:20-13:50 | AULA84 | TEO | Oycalteo Mms
+   7. Lun IMP | 14:40-16:20 | AULA114 | TEO | CAYEATEO
+   8. Lun IMP | 07:10-08:50 | AULA44 | TEO | W Cp 0Q M
+   9. Lun PAR | 07:10-08:50 | AULA44 | TEO | W Cp 0Q M
+  10. Lun IMP | 08:50-10:30 | AULA54 | TEO | Mocdetaltal Mecdataltal
+  ... y 58 clases mas
+
+Tip: Guarda el resultado con --output imagen_2_importado.json
+
+JSON COMPLETO:
+{
+  "success": true,
+  "message": "OK: Importacion exitosa: 68 clases encontradas",
+  "schedules": [
+    {
+      "subject_id": "AULA43_W_0_LUN_IMP_T1_2",
+      "subject_name": "W 0",
+      "day_of_week": "Lunes",
+      "week_type": "impar",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "AULA43",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.51
+    },
+    {
+      "subject_id": "AULA53_Mocdetaltal_LUN_IMP_T3_4",
+      "subject_name": "Mocdetaltal",
+      "day_of_week": "Lunes",
+      "week_type": "impar",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA53",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.91
+    },
+    {
+      "subject_id": "AULA73_313_A_LUN_IMP_T5_6",
+      "subject_name": "313 A",
+      "day_of_week": "Lunes",
+      "week_type": "impar",
+      "start_time": "10:30",
+      "end_time": "12:10",
+      "classroom": "AULA73",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 5,
+      "time_slot_end": 6,
+      "num_slots": 2,
+      "confidence": 0.59
+    },
+    {
+      "subject_id": "AULA73_313_A_LUN_PAR_T5_6",
+      "subject_name": "313 A",
+      "day_of_week": "Lunes",
+      "week_type": "par",
+      "start_time": "10:30",
+      "end_time": "12:10",
+      "classroom": "AULA73",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 5,
+      "time_slot_end": 6,
+      "num_slots": 2,
+      "confidence": 0.59
+    },
+    {
+      "subject_id": "AULA84_Oycalteo_Mms_LUN_IMP_T6_8",
+      "subject_name": "Oycalteo Mms",
+      "day_of_week": "Lunes",
+      "week_type": "impar",
+      "start_time": "11:20",
+      "end_time": "13:50",
+      "classroom": "AULA84",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 6,
+      "time_slot_end": 8,
+      "num_slots": 3,
+      "confidence": 0.79
+    },
+    {
+      "subject_id": "AULA84_Oycalteo_Mms_LUN_PAR_T6_8",
+      "subject_name": "Oycalteo Mms",
+      "day_of_week": "Lunes",
+      "week_type": "par",
+      "start_time": "11:20",
+      "end_time": "13:50",
+      "classroom": "AULA84",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 6,
+      "time_slot_end": 8,
+      "num_slots": 3,
+      "confidence": 0.79
+    },
+    {
+      "subject_id": "AULA114_CAYEATEO_LUN_IMP_T10_11",
+      "subject_name": "CAYEATEO",
+      "day_of_week": "Lunes",
+      "week_type": "impar",
+      "start_time": "14:40",
+      "end_time": "16:20",
+      "classroom": "AULA114",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 10,
+      "time_slot_end": 11,
+      "num_slots": 2,
+      "confidence": 0.84
+    },
+    {
+      "subject_id": "AULA44_W_Cp_0Q_M_LUN_IMP_T1_2",
+      "subject_name": "W Cp 0Q M",
+      "day_of_week": "Lunes",
+      "week_type": "impar",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "AULA44",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.43
+    },
+    {
+      "subject_id": "AULA44_W_Cp_0Q_M_LUN_PAR_T1_2",
+      "subject_name": "W Cp 0Q M",
+      "day_of_week": "Lunes",
+      "week_type": "par",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "AULA44",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.43
+    },
+    {
+      "subject_id": "AULA54_Mocdetaltal_Mecdataltal_LUN_IMP_T3_4",
+      "subject_name": "Mocdetaltal Mecdataltal",
+      "day_of_week": "Lunes",
+      "week_type": "impar",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA54",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.87
+    },
+    {
+      "subject_id": "AULA54_Mocdetaltal_Mecdataltal_LUN_PAR_T3_4",
+      "subject_name": "Mocdetaltal Mecdataltal",
+      "day_of_week": "Lunes",
+      "week_type": "par",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA54",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.87
+    },
+    {
+      "subject_id": "A2_A_$3_LUN_PAR_T5_6",
+      "subject_name": "A $3",
+      "day_of_week": "Lunes",
+      "week_type": "par",
+      "start_time": "10:30",
+      "end_time": "12:10",
+      "classroom": "A2",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 5,
+      "time_slot_end": 6,
+      "num_slots": 2,
+      "confidence": 0.94
+    },
+    {
+      "subject_id": "A313_Derer_Te_O_LUN_IMP_T10_12",
+      "subject_name": "Derer Te O",
+      "day_of_week": "Lunes",
+      "week_type": "impar",
+      "start_time": "14:40",
+      "end_time": "17:10",
+      "classroom": "A313",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 10,
+      "time_slot_end": 12,
+      "num_slots": 3,
+      "confidence": 0.84
+    },
+    {
+      "subject_id": "A313_Derer_Te_O_LUN_PAR_T10_12",
+      "subject_name": "Derer Te O",
+      "day_of_week": "Lunes",
+      "week_type": "par",
+      "start_time": "14:40",
+      "end_time": "17:10",
+      "classroom": "A313",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 10,
+      "time_slot_end": 12,
+      "num_slots": 3,
+      "confidence": 0.84
+    },
+    {
+      "subject_id": "AULA44_Co_0Q01_LUN_PAR_T1_2",
+      "subject_name": "Co 0Q01",
+      "day_of_week": "Lunes",
+      "week_type": "par",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "AULA44",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.63
+    },
+    {
+      "subject_id": "AULA84_CAYE_L_LUN_IMP_T6_8",
+      "subject_name": "CAYE L",
+      "day_of_week": "Lunes",
+      "week_type": "impar",
+      "start_time": "11:20",
+      "end_time": "13:50",
+      "classroom": "AULA84",
+      "building": "TECSUP",
+      "code": "TAL",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 6,
+      "time_slot_end": 8,
+      "num_slots": 3,
+      "confidence": 0.77
+    },
+    {
+      "subject_id": "AULA84_CAYE_L_LUN_PAR_T6_8",
+      "subject_name": "CAYE L",
+      "day_of_week": "Lunes",
+      "week_type": "par",
+      "start_time": "11:20",
+      "end_time": "13:50",
+      "classroom": "AULA84",
+      "building": "TECSUP",
+      "code": "TAL",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 6,
+      "time_slot_end": 8,
+      "num_slots": 3,
+      "confidence": 0.77
+    },
+    {
+      "subject_id": "AULA124_D_Par_LUN_PAR_T11_12",
+      "subject_name": "D Par",
+      "day_of_week": "Lunes",
+      "week_type": "par",
+      "start_time": "15:30",
+      "end_time": "17:10",
+      "classroom": "AULA124",
+      "building": "TECSUP",
+      "code": "LAB",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 11,
+      "time_slot_end": 12,
+      "num_slots": 2,
+      "confidence": 0.63
+    },
+    {
+      "subject_id": "A313_O_Te_MAR_IMP_T10_12",
+      "subject_name": "O Te",
+      "day_of_week": "Martes",
+      "week_type": "impar",
+      "start_time": "14:40",
+      "end_time": "17:10",
+      "classroom": "A313",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 10,
+      "time_slot_end": 12,
+      "num_slots": 3,
+      "confidence": 0.84
+    },
+    {
+      "subject_id": "A313_O_Te_MAR_PAR_T10_12",
+      "subject_name": "O Te",
+      "day_of_week": "Martes",
+      "week_type": "par",
+      "start_time": "14:40",
+      "end_time": "17:10",
+      "classroom": "A313",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 10,
+      "time_slot_end": 12,
+      "num_slots": 3,
+      "confidence": 0.84
+    },
+    {
+      "subject_id": "AULA45_$_Co_0Qa1_MAR_IMP_T1_2",
+      "subject_name": "$ Co 0Qa1",
+      "day_of_week": "Martes",
+      "week_type": "impar",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "AULA45",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.64
+    },
+    {
+      "subject_id": "AULA45_$_Co_0Qa1_MAR_PAR_T1_2",
+      "subject_name": "$ Co 0Qa1",
+      "day_of_week": "Martes",
+      "week_type": "par",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "AULA45",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.64
+    },
+    {
+      "subject_id": "AULA75_A_A2S3_MAR_IMP_T5_6",
+      "subject_name": "A A2S3",
+      "day_of_week": "Martes",
+      "week_type": "impar",
+      "start_time": "10:30",
+      "end_time": "12:10",
+      "classroom": "AULA75",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 5,
+      "time_slot_end": 6,
+      "num_slots": 2,
+      "confidence": 0.89
+    },
+    {
+      "subject_id": "AULA55_Mecdetaltal_MAR_IMP_T3_4",
+      "subject_name": "Mecdetaltal",
+      "day_of_week": "Martes",
+      "week_type": "impar",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA55",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.95
+    },
+    {
+      "subject_id": "AULA85_Cyetal_Lu_M_MAR_IMP_T6_8",
+      "subject_name": "Cyetal Lu M",
+      "day_of_week": "Martes",
+      "week_type": "impar",
+      "start_time": "11:20",
+      "end_time": "13:50",
+      "classroom": "AULA85",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 6,
+      "time_slot_end": 8,
+      "num_slots": 3,
+      "confidence": 0.78
+    },
+    {
+      "subject_id": "AULA85_Cyetal_Lu_M_MAR_PAR_T6_8",
+      "subject_name": "Cyetal Lu M",
+      "day_of_week": "Martes",
+      "week_type": "par",
+      "start_time": "11:20",
+      "end_time": "13:50",
+      "classroom": "AULA85",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 6,
+      "time_slot_end": 8,
+      "num_slots": 3,
+      "confidence": 0.78
+    },
+    {
+      "subject_id": "AULA125_D_Par_La_MAR_IMP_T11_12",
+      "subject_name": "D Par La",
+      "day_of_week": "Martes",
+      "week_type": "impar",
+      "start_time": "15:30",
+      "end_time": "17:10",
+      "classroom": "AULA125",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 11,
+      "time_slot_end": 12,
+      "num_slots": 2,
+      "confidence": 0.67
+    },
+    {
+      "subject_id": "AULA46_At_Tictalbporayisc_Tmio_MAR_IMP_T1_3",
+      "subject_name": "At Tictalbporayisc Tmio",
+      "day_of_week": "Martes",
+      "week_type": "impar",
+      "start_time": "07:10",
+      "end_time": "09:40",
+      "classroom": "AULA46",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 3,
+      "num_slots": 3,
+      "confidence": 0.76
+    },
+    {
+      "subject_id": "AULA46_At_Tictalbporayisc_Tmio_MAR_PAR_T1_3",
+      "subject_name": "At Tictalbporayisc Tmio",
+      "day_of_week": "Martes",
+      "week_type": "par",
+      "start_time": "07:10",
+      "end_time": "09:40",
+      "classroom": "AULA46",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 3,
+      "num_slots": 3,
+      "confidence": 0.76
+    },
+    {
+      "subject_id": "AULA66_Ath_I6Edseoon_MAR_IMP_T3_4",
+      "subject_name": "Ath I6Edseoon",
+      "day_of_week": "Martes",
+      "week_type": "impar",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA66",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.62
+    },
+    {
+      "subject_id": "AULA66_Ath_I6Edseoon_MAR_PAR_T3_4",
+      "subject_name": "Ath I6Edseoon",
+      "day_of_week": "Martes",
+      "week_type": "par",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA66",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.62
+    },
+    {
+      "subject_id": "A109_Clase_A109_MAR_IMP_T5_6",
+      "subject_name": "Clase A109",
+      "day_of_week": "Martes",
+      "week_type": "impar",
+      "start_time": "10:30",
+      "end_time": "12:10",
+      "classroom": "A109",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 5,
+      "time_slot_end": 6,
+      "num_slots": 2,
+      "confidence": 0.9
+    },
+    {
+      "subject_id": "A109_Clase_A109_MAR_PAR_T5_6",
+      "subject_name": "Clase A109",
+      "day_of_week": "Martes",
+      "week_type": "par",
+      "start_time": "10:30",
+      "end_time": "12:10",
+      "classroom": "A109",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 5,
+      "time_slot_end": 6,
+      "num_slots": 2,
+      "confidence": 0.9
+    },
+    {
+      "subject_id": "AULA46_Joe_Gullernaz_Ath_MI├ë_IMP_T1_2",
+      "subject_name": "Joe Gullernaz Ath",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "impar",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "AULA46",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.71
+    },
+    {
+      "subject_id": "AULA46_Joe_Gullernaz_Ath_MI├ë_PAR_T1_2",
+      "subject_name": "Joe Gullernaz Ath",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "par",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "AULA46",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.71
+    },
+    {
+      "subject_id": "AT4_Datth_At4_MI├ë_IMP_T3_4",
+      "subject_name": "Datth At4",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "impar",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AT4",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.59
+    },
+    {
+      "subject_id": "AT4_Datth_At4_MI├ë_PAR_T3_4",
+      "subject_name": "Datth At4",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "par",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AT4",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.59
+    },
+    {
+      "subject_id": "AULA76_109_MI├ë_IMP_T5_6",
+      "subject_name": "109",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "impar",
+      "start_time": "10:30",
+      "end_time": "12:10",
+      "classroom": "AULA76",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 5,
+      "time_slot_end": 6,
+      "num_slots": 2,
+      "confidence": 0.83
+    },
+    {
+      "subject_id": "AULA76_109_MI├ë_PAR_T5_6",
+      "subject_name": "109",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "par",
+      "start_time": "10:30",
+      "end_time": "12:10",
+      "classroom": "AULA76",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 5,
+      "time_slot_end": 6,
+      "num_slots": 2,
+      "confidence": 0.83
+    },
+    {
+      "subject_id": "A102_Tiotelbxporayiuc_Tmoo_A_MI├ë_IMP_T1_3",
+      "subject_name": "Tiotelbxporayiuc Tmoo A",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "impar",
+      "start_time": "07:10",
+      "end_time": "09:40",
+      "classroom": "A102",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 3,
+      "num_slots": 3,
+      "confidence": 0.67
+    },
+    {
+      "subject_id": "A102_Tiotelbxporayiuc_Tmoo_A_MI├ë_PAR_T1_3",
+      "subject_name": "Tiotelbxporayiuc Tmoo A",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "par",
+      "start_time": "07:10",
+      "end_time": "09:40",
+      "classroom": "A102",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 3,
+      "num_slots": 3,
+      "confidence": 0.67
+    },
+    {
+      "subject_id": "AULA67_Teodelbiporvdac_Tn_Datht_A_MI├ë_IMP_T3_5",
+      "subject_name": "Teodelbiporvdac Tn Datht A",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "impar",
+      "start_time": "08:50",
+      "end_time": "11:20",
+      "classroom": "AULA67",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 5,
+      "num_slots": 3,
+      "confidence": 0.68
+    },
+    {
+      "subject_id": "AULA67_Teodelbiporvdac_Tn_Datht_A_MI├ë_PAR_T3_5",
+      "subject_name": "Teodelbiporvdac Tn Datht A",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "par",
+      "start_time": "08:50",
+      "end_time": "11:20",
+      "classroom": "AULA67",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 5,
+      "num_slots": 3,
+      "confidence": 0.68
+    },
+    {
+      "subject_id": "AULA87_Clase_Aula87_MI├ë_IMP_T6_7",
+      "subject_name": "Clase Aula87",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "impar",
+      "start_time": "11:20",
+      "end_time": "13:00",
+      "classroom": "AULA87",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 6,
+      "time_slot_end": 7,
+      "num_slots": 2,
+      "confidence": 0.88
+    },
+    {
+      "subject_id": "A509_Clase_A509_MI├ë_PAR_T6_6",
+      "subject_name": "Clase A509",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "par",
+      "start_time": "11:20",
+      "end_time": "12:10",
+      "classroom": "A509",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 6,
+      "time_slot_end": 6,
+      "num_slots": 1,
+      "confidence": 0.82
+    },
+    {
+      "subject_id": "AULA57_Ondc_La_Tocdae_Pes_MI├ë_IMP_T3_4",
+      "subject_name": "Ondc La Tocdae Pes",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "impar",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA57",
+      "building": "TECSUP",
+      "code": "LAB",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.74
+    },
+    {
+      "subject_id": "AULA57_Ondc_La_Tocdae_Pes_MI├ë_PAR_T3_4",
+      "subject_name": "Ondc La Tocdae Pes",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "par",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA57",
+      "building": "TECSUP",
+      "code": "LAB",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.74
+    },
+    {
+      "subject_id": "M6_G_C_MI├ë_IMP_T1_2",
+      "subject_name": "G C",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "impar",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "M6",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.68
+    },
+    {
+      "subject_id": "M6_G_C_MI├ë_PAR_T1_2",
+      "subject_name": "G C",
+      "day_of_week": "Mi├®rcoles",
+      "week_type": "par",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "M6",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.68
+    },
+    {
+      "subject_id": "A509_Clase_A509_JUE_IMP_T6_7",
+      "subject_name": "Clase A509",
+      "day_of_week": "Jueves",
+      "week_type": "impar",
+      "start_time": "11:20",
+      "end_time": "13:00",
+      "classroom": "A509",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 6,
+      "time_slot_end": 7,
+      "num_slots": 2,
+      "confidence": 0.78
+    },
+    {
+      "subject_id": "AULA58_Toccoe_Pos_Ondyc_JUE_IMP_T3_4",
+      "subject_name": "Toccoe Pos Ondyc",
+      "day_of_week": "Jueves",
+      "week_type": "impar",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA58",
+      "building": "TECSUP",
+      "code": "LAB",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.74
+    },
+    {
+      "subject_id": "AULA58_Toccoe_Pos_Ondyc_JUE_PAR_T3_4",
+      "subject_name": "Toccoe Pos Ondyc",
+      "day_of_week": "Jueves",
+      "week_type": "par",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA58",
+      "building": "TECSUP",
+      "code": "LAB",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.74
+    },
+    {
+      "subject_id": "A12_C_Mam_JUE_IMP_T1_2",
+      "subject_name": "C Mam",
+      "day_of_week": "Jueves",
+      "week_type": "impar",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "A12",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.75
+    },
+    {
+      "subject_id": "A12_C_Mam_JUE_PAR_T1_2",
+      "subject_name": "C Mam",
+      "day_of_week": "Jueves",
+      "week_type": "par",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "A12",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.75
+    },
+    {
+      "subject_id": "A109_Tequp_Ted_JUE_IMP_T1_3",
+      "subject_name": "Tequp Ted",
+      "day_of_week": "Jueves",
+      "week_type": "impar",
+      "start_time": "07:10",
+      "end_time": "09:40",
+      "classroom": "A109",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 3,
+      "num_slots": 3,
+      "confidence": 0.78
+    },
+    {
+      "subject_id": "A109_Tequp_Ted_JUE_PAR_T1_3",
+      "subject_name": "Tequp Ted",
+      "day_of_week": "Jueves",
+      "week_type": "par",
+      "start_time": "07:10",
+      "end_time": "09:40",
+      "classroom": "A109",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 3,
+      "num_slots": 3,
+      "confidence": 0.78
+    },
+    {
+      "subject_id": "A1_A1F2_Wi_Coa_$2_JUE_IMP_T3_4",
+      "subject_name": "A1F2 Wi Coa $2",
+      "day_of_week": "Jueves",
+      "week_type": "impar",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "A1",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.79
+    },
+    {
+      "subject_id": "A1_A1F2_Wi_Coa_$2_JUE_PAR_T3_4",
+      "subject_name": "A1F2 Wi Coa $2",
+      "day_of_week": "Jueves",
+      "week_type": "par",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "A1",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.79
+    },
+    {
+      "subject_id": "E0_EOLAS_VIE_IMP_T5_6",
+      "subject_name": "EOLAS",
+      "day_of_week": "Viernes",
+      "week_type": "impar",
+      "start_time": "10:30",
+      "end_time": "12:10",
+      "classroom": "E0",
+      "building": "TECSUP",
+      "code": "LAB",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 5,
+      "time_slot_end": 6,
+      "num_slots": 2,
+      "confidence": 0.74
+    },
+    {
+      "subject_id": "E0_EOLAS_VIE_PAR_T5_6",
+      "subject_name": "EOLAS",
+      "day_of_week": "Viernes",
+      "week_type": "par",
+      "start_time": "10:30",
+      "end_time": "12:10",
+      "classroom": "E0",
+      "building": "TECSUP",
+      "code": "LAB",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 5,
+      "time_slot_end": 6,
+      "num_slots": 2,
+      "confidence": 0.74
+    },
+    {
+      "subject_id": "A109_Tequps_VIE_IMP_T1_3",
+      "subject_name": "Tequps",
+      "day_of_week": "Viernes",
+      "week_type": "impar",
+      "start_time": "07:10",
+      "end_time": "09:40",
+      "classroom": "A109",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 3,
+      "num_slots": 3,
+      "confidence": 0.83
+    },
+    {
+      "subject_id": "A109_Tequps_VIE_PAR_T1_3",
+      "subject_name": "Tequps",
+      "day_of_week": "Viernes",
+      "week_type": "par",
+      "start_time": "07:10",
+      "end_time": "09:40",
+      "classroom": "A109",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 3,
+      "num_slots": 3,
+      "confidence": 0.83
+    },
+    {
+      "subject_id": "AULA610_Wi_Co_VIE_IMP_T3_4",
+      "subject_name": "Wi Co",
+      "day_of_week": "Viernes",
+      "week_type": "impar",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA610",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.7
+    },
+    {
+      "subject_id": "AULA510_Procodatla_VIE_PAR_T3_4",
+      "subject_name": "Procodatla",
+      "day_of_week": "Viernes",
+      "week_type": "par",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA510",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.78
+    },
+    {
+      "subject_id": "AULA412_02_Edloayza_S├üB_IMP_T1_2",
+      "subject_name": "02 Edloayza",
+      "day_of_week": "S├íbado",
+      "week_type": "impar",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "AULA412",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.73
+    },
+    {
+      "subject_id": "AULA412_02_Edloayza_S├üB_PAR_T1_2",
+      "subject_name": "02 Edloayza",
+      "day_of_week": "S├íbado",
+      "week_type": "par",
+      "start_time": "07:10",
+      "end_time": "08:50",
+      "classroom": "AULA412",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 1,
+      "time_slot_end": 2,
+      "num_slots": 2,
+      "confidence": 0.73
+    },
+    {
+      "subject_id": "AULA512_Prooeda_S├üB_IMP_T3_4",
+      "subject_name": "Prooeda",
+      "day_of_week": "S├íbado",
+      "week_type": "impar",
+      "start_time": "08:50",
+      "end_time": "10:30",
+      "classroom": "AULA512",
+      "building": "TECSUP",
+      "code": "LAB",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 3,
+      "time_slot_end": 4,
+      "num_slots": 2,
+      "confidence": 0.84
+    },
+    {
+      "subject_id": "AULA1814_Asc_Horarios_En_DOM_PAR_T18_19",
+      "subject_name": "Asc Horarios En",
+      "day_of_week": "Domingo",
+      "week_type": "par",
+      "start_time": "21:20",
+      "end_time": "23:00",
+      "classroom": "AULA1814",
+      "building": "TECSUP",
+      "code": "TEO",
+      "teacher_id": "TEACHER_AUTO",
+      "section": "AUTO",
+      "time_slot": 18,
+      "time_slot_end": 19,
+      "num_slots": 3,
+      "confidence": 1.0
+    }
+  ],
+  "metadata": {
+    "image_path": "test_images\\imagen_2.png",
+    "file_size_kb": 91.65,
+    "teacher_id": "TEACHER_AUTO",
+    "section": "AUTO",
+    "total_classes": 68,
+    "semana_par": 32,
+    "semana_impar": 36,
+    "ocr_detections": 177
+  }
+}

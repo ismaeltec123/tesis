@@ -194,6 +194,59 @@ class EventViewModel extends ChangeNotifier {
     }
   }
 
+  // Autenticación automática con Google Calendar (abre navegador)
+  Future<bool> authenticateGoogleAuto() async {
+    try {
+      if (!_isServerRunning) {
+        throw Exception('Servidor backend no está funcionando');
+      }
+      
+      bool success = await GoogleCalendarApiService.authenticateGoogleAuto();
+      
+      if (success) {
+        print('🌐 Navegador abierto para autenticación');
+        _lastSyncMessage = 'Navegador abierto. Selecciona tu cuenta de Gmail.';
+        
+        // Esperar un momento y verificar el estado
+        await Future.delayed(const Duration(seconds: 2));
+        await checkStatus();
+      }
+      
+      notifyListeners();
+      return success;
+    } catch (e) {
+      print('Error en autenticación automática Google: $e');
+      _lastSyncMessage = 'Error al iniciar autenticación';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // Eliminar token de Google (desconectar)
+  Future<bool> removeGoogleToken() async {
+    try {
+      if (!_isServerRunning) {
+        throw Exception('Servidor backend no está funcionando');
+      }
+      
+      bool success = await GoogleCalendarApiService.removeGoogleToken();
+      
+      if (success) {
+        print('🗑️ Token de Google eliminado');
+        _isGoogleAuthenticated = false;
+        _lastSyncMessage = 'Google Calendar desconectado';
+        notifyListeners();
+      }
+      
+      return success;
+    } catch (e) {
+      print('Error eliminando token de Google: $e');
+      _lastSyncMessage = 'Error al eliminar token';
+      notifyListeners();
+      return false;
+    }
+  }
+
   // Sincronizar manualmente con Google Calendar
   Future<void> manualSync() async {
     if (!_isServerRunning) {

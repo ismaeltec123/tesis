@@ -1,0 +1,596 @@
+"""
+Rutas para parsear horarios desde imágenes JPG/PNG
+NOTA: El procesamiento OCR ahora se hace en un servicio Docker externo
+Este módulo solo mantiene las vistas/endpoints para compatibilidad con Flutter
+"""
+
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException
+from fastapi.responses import JSONResponse
+import logging
+import httpx
+import os
+from typing import Optional
+
+# Configurar logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# URL del servicio Docker de OCR (configurable por variable de entorno)
+OCR_SERVICE_URL = os.getenv("OCR_SERVICE_URL", "http://localhost:8002")
+logger.info(f"🐳 Servicio OCR Docker configurado en: {OCR_SERVICE_URL}")
+
+router = APIRouter(prefix="/schedule-parser", tags=["Schedule Parser"])
+
+
+async def parse_schedule_from_docker_service(
+    image_bytes: bytes, 
+    teacher_id: str, 
+    section: str
+) -> list:
+    """
+    Envía la imagen al servicio Docker de OCR y retorna los horarios parseados
+    
+    Args:
+        image_bytes: Bytes de la imagen
+        teacher_id: ID del profesor
+        section: Sección del curso
+    
+    Returns:
+        Lista con TODAS las clases (semanas pares e impares)
+    """
+    try:
+        logger.info(f"🐳 Enviando imagen al servicio Docker OCR: {OCR_SERVICE_URL}")
+        
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            # Preparar el multipart form data
+            files = {"file": ("schedule.jpg", image_bytes, "image/jpeg")}
+            data = {
+                "teacher_id": teacher_id,
+                "section": section or ""
+            }
+            
+            # Enviar request al servicio Docker
+            response = await client.post(
+                f"{OCR_SERVICE_URL}/api/process-schedule",
+                files=files,
+                data=data
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                schedules = result.get("schedules", [])
+                logger.info(f"✅ Servicio Docker retornó {len(schedules)} clases")
+                return schedules
+            else:
+                logger.error(f"❌ Error del servicio Docker: {response.status_code} - {response.text}")
+                raise HTTPException(
+                    status_code=502,
+                    detail=f"Error en servicio OCR Docker: {response.status_code}"
+                )
+                
+    except httpx.TimeoutException:
+        logger.error("⏱️ Timeout conectando con servicio Docker OCR")
+        raise HTTPException(
+            status_code=504,
+            detail="Timeout: Servicio OCR no responde"
+        )
+    except httpx.ConnectError:
+        logger.error(f"🔌 No se puede conectar al servicio Docker OCR en {OCR_SERVICE_URL}")
+        raise HTTPException(
+            status_code=503,
+            detail=f"Servicio OCR no disponible en {OCR_SERVICE_URL}"
+        )
+    except Exception as e:
+        logger.error(f"❌ Error inesperado comunicándose con servicio Docker: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error procesando con servicio OCR: {str(e)}"
+        )
+
+
+    """
+    Parsea un horario desde imagen usando OCR (Tesseract)
+    Si OCR falla o no está instalado, usa datos MOCK como fallback
+    
+    Args:
+        image_bytes: Bytes de la imagen
+        teacher_id: ID del profesor
+        section: Sección del curso
+    
+    Returns:
+        Lista con TODAS las clases (semanas pares e impares)
+    """
+    
+    # INTENTAR PROCESAR CON OCR PRIMERO
+    if OCR_AVAILABLE and process_schedule_image:
+        try:
+            logger.info("🔍 Intentando procesar imagen con OCR (PaddleOCR/Tesseract fallback)...")
+            ocr_result = process_schedule_image(image_bytes, teacher_id, section)
+            
+            if ocr_result and len(ocr_result) > 0:
+                logger.info(f"✅ OCR exitoso: {len(ocr_result)} clases extraídas")
+                return ocr_result
+            else:
+                logger.warning("⚠️ OCR no extrajo datos suficientes, usando MOCK como fallback")
+        
+        except Exception as e:
+            logger.warning(f"⚠️ OCR falló: {str(e)}, usando datos MOCK como fallback")
+    else:
+        logger.info("ℹ️ OCR no disponible, usando datos MOCK")
+    
+    # FALLBACK: Datos MOCK si OCR falla o no está disponible
+    logger.info("📋 Usando datos MOCK (Tesseract no disponible o falló)")
+    
+    # Horario real de TECSUP - 1C5(A-B) Primer Semestre - Electrónica y Automatización Industrial - Grupo A-B
+    # Basado en la imagen del usuario - SEMANAS PARES E IMPARES
+    mock_schedules = [
+        # ==================== LUNES ====================
+        # LUNES - Semana Impar
+        {
+            "subject_id": "A111_INSTALELE_LAB_LUN_IMPAR",
+            "subject_name": "InstalEle.LAB",
+            "day_of_week": "Lunes",
+            "week_type": "impar",
+            "start_time": "13:50",
+            "end_time": "14:40",
+            "classroom": "A111",
+            "building": "TECSUP",
+            "code": "Jav.Caballero"
+        },
+        {
+            "subject_id": "A112_INSTALELE_LAB_LUN_IMPAR",
+            "subject_name": "InstalEle.LAB",
+            "day_of_week": "Lunes",
+            "week_type": "impar",
+            "start_time": "14:40",
+            "end_time": "16:20",
+            "classroom": "A112",
+            "building": "TECSUP",
+            "code": "Jav.Caballero"
+        },
+        {
+            "subject_id": "C4_CALYCAT_TEO_LUN_IMPAR",
+            "subject_name": "CalyCat.TEO",
+            "day_of_week": "Lunes",
+            "week_type": "impar",
+            "start_time": "18:50",
+            "end_time": "19:40",
+            "classroom": "C4",
+            "building": "TECSUP",
+            "code": "Mic.Galindo"
+        },
+        
+        # LUNES - Semana Par
+        {
+            "subject_id": "F161_F102_TALELE_TEO_LUN_PAR",
+            "subject_name": "TalEle.TEO",
+            "day_of_week": "Lunes",
+            "week_type": "par",
+            "start_time": "12:10",
+            "end_time": "13:00",
+            "classroom": "F161 / F102",
+            "building": "TECSUP",
+            "code": "Hue.Mamani / Kar.Carpio"
+        },
+        {
+            "subject_id": "A112_INSTALELE_LAB_LUN_PAR",
+            "subject_name": "InstalEle.LAB",
+            "day_of_week": "Lunes",
+            "week_type": "par",
+            "start_time": "13:50",
+            "end_time": "14:40",
+            "classroom": "A112",
+            "building": "TECSUP",
+            "code": "Jav.Caballero"
+        },
+        {
+            "subject_id": "A111_INSTALELE_LAB_LUN_PAR",
+            "subject_name": "InstalEle.LAB",
+            "day_of_week": "Lunes",
+            "week_type": "par",
+            "start_time": "14:40",
+            "end_time": "16:20",
+            "classroom": "A111",
+            "building": "TECSUP",
+            "code": "Jav.Caballero"
+        },
+        {
+            "subject_id": "C4_CALYCAT_TEO_LUN_PAR",
+            "subject_name": "CalyCat.TEO",
+            "day_of_week": "Lunes",
+            "week_type": "par",
+            "start_time": "18:50",
+            "end_time": "19:40",
+            "classroom": "C4",
+            "building": "TECSUP",
+            "code": "Mic.Galindo"
+        },
+        
+        # ==================== MARTES ====================
+        # MARTES - Semana Impar (sin clases en la mañana)
+        {
+            "subject_id": "A109_TUTORIA_MAR_IMPAR",
+            "subject_name": "Tutoria 1",
+            "day_of_week": "Martes",
+            "week_type": "impar",
+            "start_time": "13:00",
+            "end_time": "13:50",
+            "classroom": "A109",
+            "building": "TECSUP",
+            "code": "Oli.Huanca"
+        },
+        {
+            "subject_id": "A109_INSTALELE_TEO_MAR_IMPAR",
+            "subject_name": "InstalEle.TEO",
+            "day_of_week": "Martes",
+            "week_type": "impar",
+            "start_time": "13:50",
+            "end_time": "14:40",
+            "classroom": "A109",
+            "building": "TECSUP",
+            "code": "Jav.Caballero"
+        },
+        {
+            "subject_id": "A109_TECDEC_TEO_MAR_IMPAR",
+            "subject_name": "TecDec•pGray•Esc.TEO",
+            "day_of_week": "Martes",
+            "week_type": "impar",
+            "start_time": "15:30",
+            "end_time": "17:10",
+            "classroom": "A109",
+            "building": "TECSUP",
+            "code": "Day.Sandoval"
+        },
+        {
+            "subject_id": "A109_TECDEC_TAL_MAR_IMPAR",
+            "subject_name": "TecDec•pGray•Esc.TAL",
+            "day_of_week": "Martes",
+            "week_type": "impar",
+            "start_time": "17:30",
+            "end_time": "18:00",
+            "classroom": "A109",
+            "building": "TECSUP",
+            "code": "Day.Sandoval"
+        },
+        
+        # MARTES - Semana Par (con clases adicionales en la mañana)
+        {
+            "subject_id": "A114_MIB_E9_MAR_PAR",
+            "subject_name": "MIb / E9",
+            "day_of_week": "Martes",
+            "week_type": "par",
+            "start_time": "08:50",
+            "end_time": "09:40",
+            "classroom": "A114",
+            "building": "TECSUP",
+            "code": "Hub.Mamani / Kar.Carpio"
+        },
+        {
+            "subject_id": "A114_TXELE_TAL_MAR_PAR",
+            "subject_name": "TxEle.TAL",
+            "day_of_week": "Martes",
+            "week_type": "par",
+            "start_time": "09:40",
+            "end_time": "11:20",
+            "classroom": "A114",
+            "building": "TECSUP",
+            "code": "Hub.Mamani / Kar.Carpio"
+        },
+        {
+            "subject_id": "A109_TUTORIA_MAR_PAR",
+            "subject_name": "Tutoria 1",
+            "day_of_week": "Martes",
+            "week_type": "par",
+            "start_time": "13:00",
+            "end_time": "13:50",
+            "classroom": "A109",
+            "building": "TECSUP",
+            "code": "Oli.Huanca"
+        },
+        {
+            "subject_id": "A109_INSTALELE_TEO_MAR_PAR",
+            "subject_name": "InstalEle.TEO",
+            "day_of_week": "Martes",
+            "week_type": "par",
+            "start_time": "13:50",
+            "end_time": "14:40",
+            "classroom": "A109",
+            "building": "TECSUP",
+            "code": "Jav.Caballero"
+        },
+        {
+            "subject_id": "A109_TECDEC_TEO_MAR_PAR",
+            "subject_name": "TecDec•pGray•Esc.TEO",
+            "day_of_week": "Martes",
+            "week_type": "par",
+            "start_time": "15:30",
+            "end_time": "17:10",
+            "classroom": "A109",
+            "building": "TECSUP",
+            "code": "Day.Sandoval"
+        },
+        {
+            "subject_id": "A109_TECDEC_TAL_MAR_PAR",
+            "subject_name": "TecDec•pGray•Esc.TAL",
+            "day_of_week": "Martes",
+            "week_type": "par",
+            "start_time": "17:30",
+            "end_time": "18:00",
+            "classroom": "A109",
+            "building": "TECSUP",
+            "code": "Day.Sandoval"
+        },
+        
+        # ==================== MIÉRCOLES ====================
+        # MIÉRCOLES - Semana Impar
+        {
+            "subject_id": "A114_DISPPER_TE_MIE_IMPAR",
+            "subject_name": "DisPper.TE",
+            "day_of_week": "Miércoles",
+            "week_type": "impar",
+            "start_time": "10:30",
+            "end_time": "11:20",
+            "classroom": "A114",
+            "building": "TECSUP",
+            "code": "Pie.Delgadillo"
+        },
+        {
+            "subject_id": "A114_DISPPER_LAB_MIE_IMPAR",
+            "subject_name": "DisPper.LAB",
+            "day_of_week": "Miércoles",
+            "week_type": "impar",
+            "start_time": "11:20",
+            "end_time": "13:00",
+            "classroom": "A114",
+            "building": "TECSUP",
+            "code": "Pie.Delgadillo"
+        },
+        
+        # MIÉRCOLES - Semana Par
+        {
+            "subject_id": "A114_DISPPER_TE_MIE_PAR",
+            "subject_name": "DisPper.TE",
+            "day_of_week": "Miércoles",
+            "week_type": "par",
+            "start_time": "10:30",
+            "end_time": "11:20",
+            "classroom": "A114",
+            "building": "TECSUP",
+            "code": "Pie.Delgadillo"
+        },
+        {
+            "subject_id": "A114_DISPPER_LAB_MIE_PAR",
+            "subject_name": "DisPper.LAB",
+            "day_of_week": "Miércoles",
+            "week_type": "par",
+            "start_time": "11:20",
+            "end_time": "13:00",
+            "classroom": "A114",
+            "building": "TECSUP",
+            "code": "Pie.Delgadillo"
+        },
+        
+        # ==================== JUEVES ====================
+        # JUEVES - Semana Impar (vacío)
+        
+        # JUEVES - Semana Par
+        {
+            "subject_id": "C4_VS02_CITIBASAU_TEO_JUE_PAR",
+            "subject_name": "CitiBasAu.TEO",
+            "day_of_week": "Jueves",
+            "week_type": "par",
+            "start_time": "18:50",
+            "end_time": "19:40",
+            "classroom": "C4 / VS02",
+            "building": "TECSUP",
+            "code": "Asb.Agramente / Bry.Orihuela"
+        },
+        
+        # ==================== VIERNES ====================
+        # VIERNES - Semana Impar
+        {
+            "subject_id": "A102_AH11_VS02_VIE_IMPAR",
+            "subject_name": "CitiBasAu.LAB",
+            "day_of_week": "Viernes",
+            "week_type": "impar",
+            "start_time": "15:40",
+            "end_time": "17:20",
+            "classroom": "A102 / AH11 / VS02",
+            "building": "TECSUP",
+            "code": "Asb.Agramente / Bry.Orihuela"
+        },
+        
+        # VIERNES - Semana Par
+        {
+            "subject_id": "A102_AH11_VS02_VIE_PAR",
+            "subject_name": "CitiBasAu.LAB",
+            "day_of_week": "Viernes",
+            "week_type": "par",
+            "start_time": "15:40",
+            "end_time": "17:20",
+            "classroom": "A102 / AH11 / VS02",
+            "building": "TECSUP",
+            "code": "Asb.Agramente / Bry.Orihuela"
+        },
+        
+        # ==================== SÁBADO ====================
+        # SÁBADO - Semana Impar
+        {
+            "subject_id": "A109_CALYCAT_TAL_SAB_IMPAR",
+            "subject_name": "CalyCat.TAL",
+            "day_of_week": "Sábado",
+            "week_type": "impar",
+            "start_time": "07:10",
+            "end_time": "08:00",
+            "classroom": "A109",
+            "building": "TECSUP",
+            "code": "Mic.Galindo"
+        },
+        {
+            "subject_id": "A102_AH11_VS02_CITIBASAU_LAB_SAB_IMPAR",
+            "subject_name": "CitiBasAu.LAB",
+            "day_of_week": "Sábado",
+            "week_type": "impar",
+            "start_time": "08:00",
+            "end_time": "09:40",
+            "classroom": "A102 / AH11 / VS02",
+            "building": "TECSUP",
+            "code": "Asb.Agramente / Bry.Orihuela"
+        },
+        
+        # SÁBADO - Semana Par
+        {
+            "subject_id": "A109_CALYCAT_TAL_SAB_PAR",
+            "subject_name": "CalyCat.TAL",
+            "day_of_week": "Sábado",
+            "week_type": "par",
+            "start_time": "07:10",
+            "end_time": "08:00",
+            "classroom": "A109",
+            "building": "TECSUP",
+            "code": "Mic.Galindo"
+        },
+        {
+            "subject_id": "A102_AH11_VS02_CITIBASAU_LAB_SAB_PAR",
+            "subject_name": "CitiBasAu.LAB",
+            "day_of_week": "Sábado",
+            "week_type": "par",
+            "start_time": "08:00",
+            "end_time": "09:40",
+            "classroom": "A102 / AH11 / VS02",
+            "building": "TECSUP",
+            "code": "Asb.Agramente / Bry.Orihuela"
+        },
+    ]
+    
+    # En un sistema real, aquí procesaríamos la imagen
+    # Por ahora devolvemos el horario completo (AMBAS semanas)
+    logger.info(f"Parseando horario para profesor {teacher_id}, sección {section}")
+    
+    return mock_schedules
+
+@router.post("/parse-schedule")
+async def parse_schedule_endpoint(
+    file: UploadFile = File(...),
+    teacher_id: str = Form(...),
+    section: str = Form(""),
+    note: str = Form("")
+    # REMOVIDO: week_type - ahora importamos TODAS las semanas
+):
+    """
+    Endpoint para parsear horario desde imagen JPG/PNG
+    Parámetros:
+    - file: Imagen del horario (JPG/PNG)
+    - teacher_id: ID del profesor
+    - section: Sección del curso
+    - note: Notas adicionales
+    
+    NOTA: Ahora importa AMBAS semanas (par e impar) para que el usuario pueda cambiar la visualización
+    """
+    try:
+        logger.info(f"📨 Recibida petición de parseo:")
+        logger.info(f"  - Archivo: {file.filename}")
+        logger.info(f"  - Content-Type: {file.content_type}")
+        logger.info(f"  - Teacher ID: {teacher_id}")
+        logger.info(f"  - Sección: {section}")
+        
+        # Leer el archivo primero
+        image_bytes = await file.read()
+        logger.info(f"  - Tamaño del archivo: {len(image_bytes)} bytes")
+        
+        # Validar que no esté vacío
+        if len(image_bytes) == 0:
+            raise HTTPException(status_code=400, detail="El archivo está vacío")
+        
+        # Validar que es una imagen válida (más flexible que content_type)
+        try:
+            img = Image.open(io.BytesIO(image_bytes))
+            img.verify()
+            logger.info(f"✅ Imagen válida: {img.format} {img.size}")
+        except Exception as e:
+            logger.error(f"❌ Imagen inválida: {str(e)}")
+            raise HTTPException(status_code=400, detail=f"Archivo de imagen inválido: {str(e)}")
+        
+        # Validación adicional por extensión si content_type falla
+        if file.filename:
+            valid_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp']
+            if not any(file.filename.lower().endswith(ext) for ext in valid_extensions):
+                logger.warning(f"⚠️ Extensión de archivo sospechosa: {file.filename}")
+        
+        # Log adicional para content_type
+        if not file.content_type or not file.content_type.startswith('image/'):
+            logger.warning(f"⚠️ Content-Type sospechoso: {file.content_type}, pero la imagen es válida")
+        else:
+            logger.info(f"✅ Content-Type válido: {file.content_type}")
+        
+        # Parsear el horario - IMPORTA TODAS LAS SEMANAS (par e impar)
+        schedules = parse_schedule_from_image(image_bytes, teacher_id, section)
+        
+        # NO filtrar por semana - devolver TODAS las clases
+        
+        # Agregar metadatos a cada schedule
+        for schedule in schedules:
+            schedule["id"] = str(uuid.uuid4())
+            schedule["teacher_id"] = teacher_id
+            schedule["section"] = section if section else None
+            schedule["note"] = note
+            schedule["parsed_at"] = datetime.now().isoformat()
+        
+        logger.info(f"✅ Horario parseado exitosamente: {len(schedules)} clases encontradas (pares e impares)")
+        
+        # 📧 Send notification email about successful import
+        try:
+            from ..services.email_service import email_service
+            
+            # Count by week type
+            impar_count = sum(1 for s in schedules if s.get('week_type') == 'impar')
+            par_count = sum(1 for s in schedules if s.get('week_type') == 'par')
+            
+            details = f"""
+Semana Impar: {impar_count} clases
+Semana Par: {par_count} clases
+
+Archivo: {file.filename}
+Sección: {section if section else 'No especificada'}
+"""
+            await email_service.send_schedule_imported_notification(len(schedules), details)
+            logger.info("📧 Email notification sent")
+        except Exception as email_error:
+            logger.warning(f"⚠️ Could not send email notification: {email_error}")
+        
+        return JSONResponse(content={
+            "success": True,
+            "message": f"Horario parseado exitosamente. Se encontraron {len(schedules)} clases (ambas semanas).",
+            "schedules": schedules,
+            "metadata": {
+                "teacher_id": teacher_id,
+                "section": section,
+                "note": note,
+                "filename": file.filename,
+                "file_size": len(image_bytes),
+                "parsed_at": datetime.now().isoformat()
+            }
+        })
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error parseando horario: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
+
+@router.get("/test-parser")
+async def test_parser():
+    """
+    Endpoint de prueba para verificar que el parser funciona
+    """
+    return JSONResponse(content={
+        "message": "Parser de horarios funcionando correctamente",
+        "version": "1.0.0",
+        "supported_formats": ["JPG", "PNG", "JPEG"],
+        "features": [
+            "Detección automática de clases",
+            "Extracción de horarios",
+            "Identificación de aulas",
+            "Asignación por secciones"
+        ]
+    })

@@ -1,0 +1,133 @@
+{
+  "user_id": "demo_user_123",
+  "event": {
+    "id": "evt_456",
+    "title": "Estudiar Matemáticas - Cálculo Integral",
+    "type": "estudio",
+    "duration_minutes": 90,
+    "original_date": "2025-12-09T20:00:00Z"
+  },
+  "user_history": [
+    {
+      "date": "2025-11-25T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Estudiar Álgebra"
+    },
+    {
+      "date": "2025-11-25T14:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Hacer ejercicios"
+    },
+    {
+      "date": "2025-11-25T20:00:00Z",
+      "status": "pendiente",
+      "type": "estudio",
+      "title": "Repasar teoría"
+    },
+    {
+      "date": "2025-11-26T09:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Estudiar Física"
+    },
+    {
+      "date": "2025-11-26T15:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Proyecto final"
+    },
+    {
+      "date": "2025-11-26T21:00:00Z",
+      "status": "pendiente",
+      "type": "estudio",
+      "title": "Leer capítulo 5"
+    },
+    {
+      "date": "2025-11-27T10:30:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Práctica de laboratorio"
+    },
+    {
+      "date": "2025-11-27T16:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Ir al gym"
+    },
+    {
+      "date": "2025-11-28T11:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Estudiar Química"
+    },
+    {
+      "date": "2025-11-28T14:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Resolver problemas"
+    },
+    {
+      "date": "2025-11-28T19:00:00Z",
+      "status": "pendiente",
+      "type": "personal",
+      "title": "Organizar notas"
+    },
+    {
+      "date": "2025-11-29T09:30:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Clase de Programación"
+    },
+    {
+      "date": "2025-11-29T15:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Estudiar Base de Datos"
+    },
+    {
+      "date": "2025-11-30T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Preparar examen"
+    },
+    {
+      "date": "2025-11-30T16:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Reunión de equipo"
+    },
+    {
+      "date": "2025-12-01T11:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Estudiar para parcial"
+    },
+    {
+      "date": "2025-12-01T20:00:00Z",
+      "status": "pendiente",
+      "type": "estudio",
+      "title": "Repasar fórmulas"
+    },
+    {
+      "date": "2025-12-02T09:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Asistir a tutoría"
+    },
+    {
+      "date": "2025-12-02T14:30:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Práctica en laboratorio"
+    },
+    {
+      "date": "2025-12-03T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Estudiar Estadística"
+    }
+  ],
+  "future_calendar": []
+}

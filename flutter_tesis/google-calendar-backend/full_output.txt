@@ -1,0 +1,236 @@
+﻿
+­ƒÜÇ IMPORTADOR R├üPIDO DE HORARIOS TECSUP
+========================================
+
+.\importar_horario.bat : [INFO] app.services.ocr_processor: \U0001f680 INICIANDO 
+extract_text_from_image...
+En línea: 1 Carácter: 1
++ .\importar_horario.bat test_images\imagen_3.png 2>&1 | Out-File -Enco ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([INFO] app.serv...t_from_image...:String) [ 
+   ], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[INFO] app.services.ocr_processor: 2\ufe0f\u20e3 Abriendo imagen desde bytes...
+[INFO] app.services.ocr_processor: \U0001f4f8 Imagen cargada: PNG (1034, 721) (RGBA)
+[INFO] app.services.ocr_processor: 3\ufe0f\u20e3 \U0001f3a8 Aplicando preprocesamiento 
+AGRESIVO para horarios TECSUP con fondos de colores...
+[INFO] app.services.ocr_processor: \U0001f504 RGBA \u2192 RGB con fondo blanco
+[INFO] app.services.ocr_processor: \U0001f50d Escalado a 2000x1394 (1.93x)
+[INFO] app.services.ocr_processor: \u26ab Convertido a escala de grises
+[INFO] app.services.ocr_processor: \u2728 CLAHE aplicado (ecualizaci¾n adaptativa)
+[INFO] app.services.ocr_processor: \U0001f3af Umbralizaci¾n adaptativa Gaussiana aplicada
+[INFO] app.services.ocr_processor: \U0001f4ca PÝxeles: 2556835 blancos, 231165 negros
+[INFO] app.services.ocr_processor: \U0001f9f9 MorfologÝa aplicada (apertura)
+[INFO] app.services.ocr_processor: \U0001f4be Imagen procesada guardada en: 
+C:\sdk\tesis\flutter_tesis\google-calendar-backend\temp_processed_image.png
+[INFO] app.services.ocr_processor: \u2705 Preprocesamiento completo - imagen binarizada
+[INFO] app.services.ocr_processor: \U0001f4d0 Dimensiones finales: (1394, 2000, 3)
+[INFO] app.services.ocr_processor: 1\ufe0f\u20e3 Obteniendo instancia de OCR...
+[INFO] app.services.ocr_processor: \U0001f504 Inicializando PaddleOCR (primera vez, 
+puede tardar algunos minutos)...
+[INFO] app.services.ocr_processor: \U0001f4e6 M¾dulo PaddleOCR importado correctamente
+[INFO] app.services.ocr_processor: \u2699\ufe0f Creando instancia de PaddleOCR con 
+lang='es'...
+INFORMACIÓN: no se pudo encontrar ningún archivo para los patrones dados.
+C:\sdk\tesis\flutter_tesis\.venv\Lib\site-packages\paddle\utils\cpp_extension\extension_u
+tils.py:718: UserWarning: No ccache found. Please be aware that recompiling all source 
+files may be required. You can download and install ccache from: 
+https://github.com/ccache/ccache/blob/master/doc/INSTALL.md
+  warnings.warn(warning_message)
+[32mCreating model: ('PP-LCNet_x1_0_doc_ori', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the 
+directory manually: `C:\Users\ismae\.paddlex\official_models\PP-LCNet_x1_0_doc_ori`.[0m
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1031 11:55:16.833132 25760 onednn_context.cc:81] oneDNN v3.6.2
+[32mCreating model: ('UVDoc', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the 
+directory manually: `C:\Users\ismae\.paddlex\official_models\UVDoc`.[0m
+[32mCreating model: ('PP-OCRv5_server_det', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the 
+directory manually: `C:\Users\ismae\.paddlex\official_models\PP-OCRv5_server_det`.[0m
+[32mCreating model: ('latin_PP-OCRv5_mobile_rec', None)[0m
+[32mModel files already exist. Using cached files. To redownload, please delete the 
+directory manually: 
+`C:\Users\ismae\.paddlex\official_models\latin_PP-OCRv5_mobile_rec`.[0m
+Cargando imagen: test_images\imagen_3.png
+Tama├▒o: 93.9 KB
+Ejecutando OCR...
+
+=== DEBUG OCR ===
+Tipo de result: <class 'list'>
+Longitud de result: 1
+Result es LISTA/TUPLA, longitud: 1
+Tipo de result[0]: <class 'paddlex.inference.pipelines.ocr.result.OCRResult'>
+result[0] es dict con claves: ['input_path', 'page_index', 'doc_preprocessor_res', 'dt_polys', 'model_settings', 'text_det_params', 'text_type', 'text_rec_score_thresh', 'return_word_box', 'rec_texts', 'rec_scores', 'rec_polys', 'vis_fonts', 'textline_orientation_angles', 'rec_boxes']
+Encontrados 171 textos en result[0]
+  1. 'HORARIOS PFR 2025-2' (conf: 0.99)
+  2. '1C23(A-B) - Primer Semestre - Electricidad Industrial con menci├│n en Sistemas El├®ctricos de Potencia - Grupo A-B' (conf: 0.99)
+  3. 'ASOCIACION TECSUP NRO 2, Urb Monterrey D8 JLBYR, Arequipa' (conf: 0.98)
+  4. '3' (conf: 1.00)
+  5. '5' (conf: 1.00)
+  6. '6' (conf: 1.00)
+  7. '7' (conf: 1.00)
+  8. '8' (conf: 1.00)
+  9. '9' (conf: 1.00)
+  10. '10' (conf: 1.00)
+  11. '11' (conf: 1.00)
+  12. '12' (conf: 1.00)
+  13. '13' (conf: 0.98)
+  14. '2' (conf: 1.00)
+  15. '4' (conf: 1.00)
+  16. '14' (conf: 1.00)
+  17. '15' (conf: 1.00)
+  18. '16' (conf: 1.00)
+  19. '17' (conf: 1.00)
+  20. '18' (conf: 1.00)
+  21. '19' (conf: 1.00)
+  22. '0' (conf: 0.98)
+  23. '1' (conf: 1.00)
+  24. '8:20' (conf: 0.75)
+  25. '7:10' (conf: 0.97)
+  26. '8:00' (conf: 0.92)
+  27. '8:50' (conf: 0.95)
+  28. '9:40' (conf: 0.96)
+  29. '10:30' (conf: 1.00)
+  30. '11:20' (conf: 0.99)
+  31. '12:10' (conf: 0.99)
+  32. '13:00' (conf: 1.00)
+  33. '13:50' (conf: 0.97)
+  34. '14:40' (conf: 1.00)
+  35. '15:30' (conf: 1.00)
+  36. '16:20' (conf: 0.94)
+  37. '17:10' (conf: 1.00)
+  38. '18:00' (conf: 0.93)
+  39. '18:50' (conf: 0.99)
+  40. '19:40' (conf: 1.00)
+  41. '20:30' (conf: 1.00)
+  42. '21-20' (conf: 0.87)
+  43. '22:10' (conf: 0.93)
+  44. '7:10' (conf: 0.97)
+  45. '8:00' (conf: 0.92)
+  46. '8:50' (conf: 0.97)
+  47. '9:40' (conf: 0.93)
+  48. '10:30' (conf: 1.00)
+  49. '11:20' (conf: 0.96)
+  50. '12:10' (conf: 1.00)
+  51. '13:00' (conf: 1.00)
+  52. '13:50' (conf: 1.00)
+  53. '14:40' (conf: 0.97)
+  54. '15:30' (conf: 1.00)
+  55. '16:20' (conf: 0.99)
+  56. '17:10' (conf: 1.00)
+  57. '18:00' (conf: 1.00)
+  58. '180' (conf: 0.74)
+  59. '19:40' (conf: 1.00)
+  60. '20:30' (conf: 0.83)
+  61. '21:0' (conf: 0.96)
+  62. '22:0' (conf: 0.89)
+  63. '23:.00' (conf: 0.72)
+  64. 'AIt4' (conf: 0.82)
+  67. 'AO' (conf: 0.56)
+  68. 'Eets Irpr' (conf: 0.45)
+  69. 'TOExpCrEcTaL' (conf: 0.62)
+  70. 'TacEN.TEO' (conf: 0.74)
+  71. 'CoyElteo' (conf: 0.84)
+  72. 'xO,TE' (conf: 0.61)
+  73. 'Aloe' (conf: 0.45)
+  74. 'MaUntre' (conf: 0.73)
+  75. 'DWov' (conf: 0.63)
+  76. 'A' (conf: 0.69)
+  77. 'Lunes' (conf: 0.99)
+  78. 'A3t4' (conf: 0.89)
+  79. 'AL' (conf: 0.68)
+  80. 'A' (conf: 0.81)
+  81. 'AOS' (conf: 0.56)
+  83. 'TocdaExpOrayEcTEO' (conf: 0.78)
+  84. 'T├®odeExpOra)Esc.TAL' (conf: 0.75)
+  85. 'TocE.TEO' (conf: 0.75)
+  86. 'CE' (conf: 0.69)
+  87. 'L' (conf: 0.69)
+  88. 'Maune' (conf: 0.64)
+  89. 'Dovovia' (conf: 0.68)
+  90. 'JuAvare' (conf: 0.58)
+  91. 'A313' (conf: 0.98)
+  92. 'A313' (conf: 0.75)
+  93. 'E3A' (conf: 0.84)
+  94. 'A' (conf: 0.26)
+  95. 'RnComajo' (conf: 0.74)
+  96. 'RcDA.LAB' (conf: 0.81)
+  97. 'DosPar,TE' (conf: 0.86)
+  98. 'Stns lirpe' (conf: 0.53)
+  99. 'Ple.Dgodi' (conf: 0.59)
+  100. 'DosPorLAB' (conf: 0.90)
+  101. 'b' (conf: 0.77)
+  102. 'PDo' (conf: 0.69)
+  103. 'Martes' (conf: 0.93)
+  104. 'A313' (conf: 0.97)
+  105. 'A313' (conf: 0.72)
+  106. 'DeParTe' (conf: 0.70)
+  107. 'l' (conf: 0.49)
+  108. 'Dos' (conf: 0.43)
+  109. 'De:Por.LAB' (conf: 0.72)
+  110. 'E3A' (conf: 0.79)
+  111. '┬ñ' (conf: 0.44)
+  112. 'to' (conf: 0.59)
+  114. 'Fan.Comejo' (conf: 0.81)
+  115. 'TocELAB' (conf: 0.80)
+  116. 'irpr' (conf: 0.62)
+  117. 'Mi├®rcoles' (conf: 0.97)
+  118. 'F101/F102' (conf: 0.91)
+  119. '..' (conf: 0.59)
+  121. '-*' (conf: 0.51)
+  122. 'feniy' (conf: 0.43)
+  123. 'WEaTEO' (conf: 0.84)
+  124. 'NEat' (conf: 0.44)
+  125. 'HubMamas' (conf: 0.57)
+  126. 'Ker.Capla' (conf: 0.71)
+  127. '.M├▒TK.Cao' (conf: 0.51)
+  128. 'A114' (conf: 0.94)
+  129. 'A114' (conf: 0.81)
+  131. 'Tutor 1' (conf: 0.75)
+  132. 'CayEsttaL' (conf: 0.56)
+  133. 'St.Capio' (conf: 0.73)
+  134. 'JArrz' (conf: 0.72)
+  135. 'Jueves' (conf: 1.00)
+  136. 'A114' (conf: 0.95)
+  137. '1H' (conf: 0.62)
+  138. 'Saiz' (conf: 0.37)
+  139. 'Tr 1' (conf: 0.67)
+  140. 'CiyEttal' (conf: 0.81)
+  141. 'SM.Carpio' (conf: 0.77)
+  143. 'A102/A111VLAÔÇö' (conf: 0.67)
+  144. 'CL/VSO3' (conf: 0.67)
+  145. 'A' (conf: 0.87)
+  146. 'CABA.TEO' (conf: 0.75)
+  147. 'Jo. P-ma/Jor Cardon' (conf: 0.57)
+  149. '.PTon.Cardons' (conf: 0.57)
+  150. 'Vieres' (conf: 0.91)
+  151. 'C4/V303' (conf: 0.67)
+  152. 'A1MIA1SVSM' (conf: 0.58)
+  153. 'CIOSCAPILAB' (conf: 0.63)
+  154. 'lx' (conf: 0.33)
+  155. 'CBA.TEO' (conf: 0.84)
+  156. 'Jel PyTaLon Cancone' (conf: 0.59)
+  158. 'totu.lpe' (conf: 0.46)
+  159. 'AOIAMIVALAB' (conf: 0.60)
+  160. ''a' (conf: 0.64)
+  161. 'JolPuas Joxg Cardsna' (conf: 0.62)
+  162. 'S├íbado' (conf: 0.99)
+  163. 'ly' (conf: 0.28)
+  164. 'A/AALLAB' (conf: 0.56)
+  165. 'a' (conf: 0.55)
+  166. 'JotPumssJop C' (conf: 0.57)
+  167. 'Stm kirpd' (conf: 0.61)
+  168. 'Domingo' (conf: 0.99)
+  169. 'fi' (conf: 0.32)
+  170. 'alidando:' (conf: 1.00)
+  171. 'aSc Horarios en l├¡nea' (conf: 0.98)
+=== FIN DEBUG ===
+
+OCR detecto 162 elementos de texto
+Analizando estructura de horario TECSUP...
+
+============================================================
+WARNING: No se pudieron extraer clases. Verifica que la imagen sea un horario TECSUP valido.
+============================================================

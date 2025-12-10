@@ -43,6 +43,45 @@ class GoogleCalendarApiService {
     }
   }
   
+  // Autenticación automática con Google (abre navegador automáticamente)
+  static Future<bool> authenticateGoogleAuto() async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/google/auto'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print('🌐 ${data['message']}');
+        return data['success'] ?? false;
+      }
+      return false;
+    } catch (e) {
+      print('Error en autenticación automática Google: $e');
+      return false;
+    }
+  }
+  
+  // Eliminar token de Google (desconectar)
+  static Future<bool> removeGoogleToken() async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$baseUrl/admin/google-token'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      
+      if (response.statusCode == 200) {
+        print('🗑️ Token de Google eliminado');
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Error eliminando token de Google: $e');
+      return false;
+    }
+  }
+  
   // Sincronización completa bidireccional
   static Future<Map<String, dynamic>> fullSync() async {
     try {

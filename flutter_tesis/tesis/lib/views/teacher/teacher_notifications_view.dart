@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/teacher/teacher_templates.dart';
 import '../../models/teacher/teacher_config.dart';
 import '../../models/teacher/teacher_models.dart';
+import '../../widgets/send_notification_dialog.dart';
 
 class TeacherNotificationsView extends StatefulWidget {
   const TeacherNotificationsView({super.key});
@@ -68,6 +69,22 @@ class _TeacherNotificationsViewState extends State<TeacherNotificationsView>
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _openEmailNotificationDialog,
+        backgroundColor: Colors.purple,
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.email),
+        label: const Text('Email Directo'),
+        tooltip: 'Enviar email a ismael.quispe@tecsup.edu.pe',
+      ),
+    );
+  }
+
+  void _openEmailNotificationDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const SendNotificationDialog(),
     );
   }
 

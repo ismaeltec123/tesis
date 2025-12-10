@@ -93,6 +93,7 @@ class _TeacherDashboardViewState extends State<TeacherDashboardView> {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -101,6 +102,7 @@ class _TeacherDashboardViewState extends State<TeacherDashboardView> {
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 14,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 if (TeacherTemplateConfig.USE_MOCK_STUDENTS || 
                     TeacherTemplateConfig.USE_MOCK_SCHEDULE) ...[
@@ -120,12 +122,15 @@ class _TeacherDashboardViewState extends State<TeacherDashboardView> {
                           color: Colors.orange[800],
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          'Datos de demostración',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.orange[800],
-                            fontWeight: FontWeight.w500,
+                        Flexible(
+                          child: Text(
+                            'Datos de demostración',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.orange[800],
+                              fontWeight: FontWeight.w500,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],

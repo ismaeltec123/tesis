@@ -1,248 +1,239 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/auth_viewmodel.dart';
-import '../config/app_config.dart';
+import 'main_screen.dart';
+import 'teacher/teacher_main_screen.dart';
 
 class LoginView extends StatefulWidget {
   @override
   _LoginViewState createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
-  bool _useLocalMode = AppConfig.useLocalMode;
+class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+    );
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleLogin(BuildContext context, AuthViewModel authViewModel, bool isTeacher) async {
+    if (isTeacher) {
+      await authViewModel.loginAsTeacher();
+    } else {
+      await authViewModel.loginAsStudent();
+    }
+
+    if (!mounted) return;
+
+    if (authViewModel.isLoggedIn) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => isTeacher ? const TeacherMainScreen() : const MainScreen(),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF00BCD4),
-      body: SafeArea(
-        child: Consumer<AuthViewModel>(
-          builder: (context, authViewModel, child) {
-            if (authViewModel.isLoading) {
-              return const Center(
-                child: CircularProgressIndicator(color: Colors.white),
-              );
-            }
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF00ACC1),
+              Color(0xFF00BCD4),
+              Color(0xFF0097A7),
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Consumer<AuthViewModel>(
+            builder: (context, authViewModel, child) {
+              if (authViewModel.isLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                );
+              }
 
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Logo o icono de la app
-                    Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(60),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            spreadRadius: 2,
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.school,
-                        size: 60,
-                        color: Color(0xFF00BCD4),
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 40),
-                    
-                    // Título
-                    const Text(
-                      'Sistema Académico',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 10),
-                    
-                    const Text(
-                      'Calendario y Gestión Estudiantil',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white70,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 40),
-
-                    // Toggle de modo local/online
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+              return FadeTransition(
+                opacity: _fadeAnimation,
+                child: Center(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(24.0),
+                    child: ScaleTransition(
+                      scale: _scaleAnimation,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    _useLocalMode ? Icons.wifi_off : Icons.cloud,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 8),
+                          // Logo con sombra y animación
+                          Container(
+                            width: 140,
+                            height: 140,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(70),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.school,
+                              size: 70,
+                              color: Color(0xFF00BCD4),
+                            ),
+                          ),
+                          const SizedBox(height: 50),
+                          
+                          // Título mejorado
+                          const Text(
+                            'Sistema Académico',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'Gestión de Horarios',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white70,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 60),
+                          
+                          // Botón Estudiante mejorado
+                          SizedBox(
+                            width: double.infinity,
+                            height: 65,
+                            child: ElevatedButton(
+                              onPressed: () => _handleLogin(context, authViewModel, false),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: const Color(0xFF00BCD4),
+                                elevation: 8,
+                                shadowColor: Colors.black.withValues(alpha: 0.3),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(Icons.person, size: 24),
+                                  SizedBox(width: 12),
                                   Text(
-                                    _useLocalMode ? 'Modo Sin Conexión' : 'Modo Con Conexión',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
+                                    'Ingresar como Estudiante',
+                                    style: TextStyle(
                                       fontSize: 16,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
                               ),
-                              Switch.adaptive(
-                                value: !_useLocalMode,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _useLocalMode = !value;
-                                    AppConfig.setLocalMode(_useLocalMode);
-                                  });
-                                },
-                                activeColor: Colors.white,
-                                inactiveThumbColor: Colors.white70,
-                              ),
-                            ],
+                            ),
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            _useLocalMode 
-                                ? 'Los datos se guardarán localmente en tu dispositivo'
-                                : 'Los datos se sincronizarán con la nube (Firebase)',
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
+                          const SizedBox(height: 20),
+                          
+                          // Botón Profesor mejorado
+                          SizedBox(
+                            width: double.infinity,
+                            height: 65,
+                            child: OutlinedButton(
+                              onPressed: () => _handleLogin(context, authViewModel, true),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(color: Colors.white, width: 2.5),
+                                backgroundColor: Colors.white.withValues(alpha: 0.1),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(Icons.workspace_premium, size: 24),
+                                  SizedBox(width: 12),
+                                  Text(
+                                    'Ingresar como Profesor',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 40),
+                          
+                          // Info card
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              children: const [
+                                Icon(Icons.info_outline, color: Colors.white70, size: 20),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    'Selecciona tu rol para acceder al sistema',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    
-                    const SizedBox(height: 30),
-                    
-                    // Botón Estudiante
-                    Container(
-                      width: double.infinity,
-                      height: 60,
-                      margin: const EdgeInsets.only(bottom: 16),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await authViewModel.loginAsStudent();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF00BCD4),
-                          elevation: 8,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.person, size: 24),
-                            const SizedBox(width: 12),
-                            const Text(
-                              'Ingresar como Estudiante',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    
-                    // Botón Profesor
-                    Container(
-                      width: double.infinity,
-                      height: 60,
-                      child: OutlinedButton(
-                        onPressed: () async {
-                          await authViewModel.loginAsTeacher();
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          side: const BorderSide(color: Colors.white, width: 2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.admin_panel_settings, size: 24),
-                            const SizedBox(width: 12),
-                            const Text(
-                              'Ingresar como Profesor',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 40),
-                    
-                    // Info adicional
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Column(
-                        children: [
-                          Text(
-                            'Usuarios de Ejemplo:',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Estudiante: Quispe Arias, Ismael (117334)',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                            ),
-                          ),
-                          Text(
-                            'Profesor: Profesor Ejemplo',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

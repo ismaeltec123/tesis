@@ -1,0 +1,414 @@
+{
+  "user_id": "test_user_listo",
+  "events_history": [
+    {
+      "id": "evt_001",
+      "date": "2025-10-15T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Matemáticas discretas"
+    },
+    {
+      "id": "evt_002",
+      "date": "2025-10-15T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Desarrollo backend"
+    },
+    {
+      "id": "evt_003",
+      "date": "2025-10-16T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Correr 5km"
+    },
+    {
+      "id": "evt_004",
+      "date": "2025-10-16T20:00:00Z",
+      "status": "pendiente",
+      "type": "estudio",
+      "title": "Leer paper ML",
+      "reschedule_reason": "cansado"
+    },
+    {
+      "id": "evt_005",
+      "date": "2025-10-17T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Álgebra lineal"
+    },
+    {
+      "id": "evt_006",
+      "date": "2025-10-18T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Code review"
+    },
+    {
+      "id": "evt_007",
+      "date": "2025-10-19T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Cálculo integral"
+    },
+    {
+      "id": "evt_008",
+      "date": "2025-10-20T15:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Sprint planning"
+    },
+    {
+      "id": "evt_009",
+      "date": "2025-10-21T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Gimnasio"
+    },
+    {
+      "id": "evt_010",
+      "date": "2025-10-22T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Python avanzado"
+    },
+    {
+      "id": "evt_011",
+      "date": "2025-10-23T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Desarrollar API REST"
+    },
+    {
+      "id": "evt_012",
+      "date": "2025-10-24T09:00:00Z",
+      "status": "cancelado",
+      "type": "ejercicio",
+      "title": "Natación",
+      "reschedule_reason": "clima_malo"
+    },
+    {
+      "id": "evt_013",
+      "date": "2025-10-25T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Estadística bayesiana"
+    },
+    {
+      "id": "evt_014",
+      "date": "2025-10-26T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Testing unitario"
+    },
+    {
+      "id": "evt_015",
+      "date": "2025-10-27T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Machine Learning"
+    },
+    {
+      "id": "evt_016",
+      "date": "2025-10-28T15:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Deploy producción"
+    },
+    {
+      "id": "evt_017",
+      "date": "2025-10-29T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Yoga"
+    },
+    {
+      "id": "evt_018",
+      "date": "2025-10-30T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Deep Learning"
+    },
+    {
+      "id": "evt_019",
+      "date": "2025-10-31T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Refactorización"
+    },
+    {
+      "id": "evt_020",
+      "date": "2025-11-01T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Redes neuronales"
+    },
+    {
+      "id": "evt_021",
+      "date": "2025-11-02T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Correr"
+    },
+    {
+      "id": "evt_022",
+      "date": "2025-11-03T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Optimización"
+    },
+    {
+      "id": "evt_023",
+      "date": "2025-11-04T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Meeting cliente"
+    },
+    {
+      "id": "evt_024",
+      "date": "2025-11-05T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Teoría de grafos"
+    },
+    {
+      "id": "evt_025",
+      "date": "2025-11-06T15:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Documentar código"
+    },
+    {
+      "id": "evt_026",
+      "date": "2025-11-07T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Gimnasio"
+    },
+    {
+      "id": "evt_027",
+      "date": "2025-11-08T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Computación cuántica"
+    },
+    {
+      "id": "evt_028",
+      "date": "2025-11-09T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Code review"
+    },
+    {
+      "id": "evt_029",
+      "date": "2025-11-10T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Inteligencia artificial"
+    },
+    {
+      "id": "evt_030",
+      "date": "2025-11-11T15:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Sprint retrospective"
+    },
+    {
+      "id": "evt_031",
+      "date": "2025-11-12T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Natación"
+    },
+    {
+      "id": "evt_032",
+      "date": "2025-11-13T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "NLP"
+    },
+    {
+      "id": "evt_033",
+      "date": "2025-11-14T14:00:00Z",
+      "status": "pendiente",
+      "type": "trabajo",
+      "title": "Migración BD",
+      "reschedule_reason": "no_tuve_tiempo"
+    },
+    {
+      "id": "evt_034",
+      "date": "2025-11-15T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Computer vision"
+    },
+    {
+      "id": "evt_035",
+      "date": "2025-11-16T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Correr 10km"
+    },
+    {
+      "id": "evt_036",
+      "date": "2025-11-17T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Reinforcement learning"
+    },
+    {
+      "id": "evt_037",
+      "date": "2025-11-18T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Implementar feature"
+    },
+    {
+      "id": "evt_038",
+      "date": "2025-11-19T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Transformers"
+    },
+    {
+      "id": "evt_039",
+      "date": "2025-11-20T15:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Deploy staging"
+    },
+    {
+      "id": "evt_040",
+      "date": "2025-11-21T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Gimnasio"
+    },
+    {
+      "id": "evt_041",
+      "date": "2025-11-22T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "GANs"
+    },
+    {
+      "id": "evt_042",
+      "date": "2025-11-23T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Fix bugs"
+    },
+    {
+      "id": "evt_043",
+      "date": "2025-11-24T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Autoencoders"
+    },
+    {
+      "id": "evt_044",
+      "date": "2025-11-25T15:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Optimizar queries"
+    },
+    {
+      "id": "evt_045",
+      "date": "2025-11-26T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Yoga"
+    },
+    {
+      "id": "evt_046",
+      "date": "2025-11-27T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Time series forecasting"
+    },
+    {
+      "id": "evt_047",
+      "date": "2025-11-28T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Arquitectura microservicios"
+    },
+    {
+      "id": "evt_048",
+      "date": "2025-11-29T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Prophet ML"
+    },
+    {
+      "id": "evt_049",
+      "date": "2025-11-30T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Correr"
+    },
+    {
+      "id": "evt_050",
+      "date": "2025-12-01T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "LSTM networks"
+    },
+    {
+      "id": "evt_051",
+      "date": "2025-12-02T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Code review final"
+    },
+    {
+      "id": "evt_052",
+      "date": "2025-12-03T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Attention mechanisms"
+    },
+    {
+      "id": "evt_053",
+      "date": "2025-12-04T15:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Deploy producción v2"
+    },
+    {
+      "id": "evt_054",
+      "date": "2025-12-05T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Gimnasio"
+    },
+    {
+      "id": "evt_055",
+      "date": "2025-12-06T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Transfer learning"
+    },
+    {
+      "id": "evt_056",
+      "date": "2025-12-07T14:00:00Z",
+      "status": "finalizado",
+      "type": "trabajo",
+      "title": "Presentación demo"
+    },
+    {
+      "id": "evt_057",
+      "date": "2025-12-08T10:00:00Z",
+      "status": "finalizado",
+      "type": "estudio",
+      "title": "Gradient descent"
+    },
+    {
+      "id": "evt_058",
+      "date": "2025-12-09T09:00:00Z",
+      "status": "finalizado",
+      "type": "ejercicio",
+      "title": "Correr 7km"
+    }
+  ]
+}

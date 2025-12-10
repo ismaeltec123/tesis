@@ -18,6 +18,38 @@ class GoogleAuthService:
         # Crear directorio de tokens si no existe
         os.makedirs(self.token_dir, exist_ok=True)
         
+    def initiate_auto_auth(self):
+        """Inicia el proceso de autenticación automática"""
+        import webbrowser
+        try:
+            # Verificar que el archivo de credenciales existe
+            if not os.path.exists(self.credentials_file):
+                raise FileNotFoundError(f"Archivo de credenciales no encontrado: {self.credentials_file}")
+            
+            print(f"📄 Usando credenciales: {self.credentials_file}")
+            print(f"🔗 Redirect URI: {settings.GOOGLE_REDIRECT_URI}")
+            
+            # Generar URL de autorización
+            auth_url, state = self.get_authorization_url()
+            
+            # Intentar abrir el navegador automáticamente
+            try:
+                webbrowser.open(auth_url)
+                print(f"🌐 Navegador abierto automáticamente")
+            except Exception as e:
+                print(f"⚠️ No se pudo abrir el navegador automáticamente: {e}")
+            
+            return {
+                "success": True,
+                "auth_url": auth_url,
+                "state": state,
+                "message": "Navegador abierto. Por favor, autoriza la aplicación."
+            }
+            
+        except Exception as e:
+            print(f"❌ Error en autenticación automática: {e}")
+            raise
+    
     def get_authorization_url(self):
         """Genera la URL de autorización de Google"""
         try:

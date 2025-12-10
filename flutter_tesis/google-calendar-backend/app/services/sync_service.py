@@ -17,6 +17,16 @@ class SyncService:
         try:
             print("🔄 Iniciando sincronización completa...")
             
+            # Verificar si hay autenticación con Google
+            if not self.google_service.has_valid_credentials():
+                print("⚠️  No hay credenciales de Google válidas, usando solo Firebase")
+                return {
+                    'success': True,
+                    'message': 'Sin autenticación Google - usando solo Firebase',
+                    'events_synced': 0,
+                    'errors': []
+                }
+            
             # Contadores para el reporte
             imported_count = 0
             exported_count = 0
@@ -123,24 +133,36 @@ class SyncService:
         
         if duplicate_event:
             # CASO CRÍTICO: Preservar absolutamente TODOS los datos locales
-            # Solo vincular con Google ID, NO modificar nada más
-            original_type = duplicate_event.get('type', 'importado')
+            # Solo vincular con Google ID y marcar como importado
+            original_type = duplicate_event.get('type', 'recreativo')
             original_description = duplicate_event.get('description', '')
             firebase_id = duplicate_event.get('firebase_id')
             
             if firebase_id:
-                # Solo agregar Google ID, mantener TODO lo demás intacto
-                self.firebase_service.add_google_id_to_event(firebase_id, google_event_id)
+                # Agregar Google ID y marcar como importado, mantener TODO lo demás intacto
+                update_data = {
+                    'google_event_id': google_event_id,
+                    'imported': True
+                }
+                self.firebase_service.update_event(firebase_id, update_data)
                 print(f"🔗 Evento '{duplicate_event.get('title')}' vinculado con Google Calendar")
                 print(f"   📌 PRESERVADO: tipo='{original_type}', descripción='{original_description[:50]}'")
                 return "skipped"
         
         # 3. Evento completamente nuevo desde Google Calendar
-        event_data = self.google_service._convert_from_google_format(google_event)
+        # Intentar detectar el tipo basado en el nombre del evento
+        detected_type = self._detect_event_type_from_title(google_event.get('summary', ''))
         
-        # 4. Crear evento en Firebase como "importado"
+        # Convertir evento preservando el tipo detectado y marcando como importado
+        event_data = self.google_service._convert_from_google_format(
+            google_event, 
+            preserve_type=detected_type,
+            preserve_imported=True
+        )
+        
+        # 4. Crear evento en Firebase
         firebase_id = self.firebase_service.create_event(event_data)
-        print(f"✅ Evento '{event_data.get('title')}' importado desde Google Calendar (tipo: importado)")
+        print(f"✅ Evento '{event_data.get('title')}' importado desde Google Calendar (tipo: {detected_type}, imported: True)")
         
         return "imported"
     
@@ -159,16 +181,33 @@ class SyncService:
             print(f"⏭️  Evento '{firebase_event.get('title')}' ya existe en Google Calendar")
             return "skipped"
         
-        # 3. Crear evento en Google Calendar
-        google_event_id = self.google_service.create_event(firebase_event)
-        
-        # 4. Actualizar Firebase con el Google ID
-        firebase_id = firebase_event.get('firebase_id')
-        if firebase_id and google_event_id:
-            self.firebase_service.add_google_id_to_event(firebase_id, google_event_id)
-            print(f"✅ Evento '{firebase_event.get('title')}' exportado a Google Calendar")
-        
-        return "exported"
+        try:
+            # 3. Crear evento en Google Calendar
+            google_event_id = self.google_service.create_event(firebase_event)
+            
+            if not google_event_id:
+                print(f"❌ No se pudo crear evento '{firebase_event.get('title')}' en Google Calendar")
+                return "error"
+            
+            # 4. Actualizar Firebase con el Google ID
+            firebase_id = firebase_event.get('firebase_id')
+            if firebase_id:
+                success = self.firebase_service.add_google_id_to_event(firebase_id, google_event_id)
+                if success:
+                    print(f"✅ Evento '{firebase_event.get('title')}' exportado a Google Calendar")
+                    return "exported"
+                else:
+                    print(f"⚠️  Evento creado en Google pero no se pudo actualizar Firebase ID: {firebase_id}")
+                    return "exported"
+            else:
+                print(f"⚠️  Evento '{firebase_event.get('title')}' sin firebase_id, creado en Google pero no vinculado")
+                return "exported"
+                
+        except Exception as e:
+            print(f"❌ Error exportando evento '{firebase_event.get('title', 'Sin título')}': {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return "error"
     
     def _find_duplicate_by_title_and_date(self, google_event: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -270,19 +309,28 @@ class SyncService:
             if not all([google_start_date, google_end_date, firebase_start_date, firebase_end_date]):
                 return False
             
-            # Convertir a datetime para comparación
+            # Convertir a datetime para comparación (asegurando timezone-aware)
             google_start_dt = datetime.fromisoformat(google_start_date.replace('Z', '+00:00'))
             google_end_dt = datetime.fromisoformat(google_end_date.replace('Z', '+00:00'))
             
             if isinstance(firebase_start_date, str):
                 firebase_start_dt = datetime.fromisoformat(firebase_start_date.replace('Z', '+00:00'))
+                # Si no tiene timezone, añadir UTC
+                if firebase_start_dt.tzinfo is None:
+                    firebase_start_dt = firebase_start_dt.replace(tzinfo=timezone.utc)
             else:
                 firebase_start_dt = firebase_start_date
+                if firebase_start_dt.tzinfo is None:
+                    firebase_start_dt = firebase_start_dt.replace(tzinfo=timezone.utc)
                 
             if isinstance(firebase_end_date, str):
                 firebase_end_dt = datetime.fromisoformat(firebase_end_date.replace('Z', '+00:00'))
+                if firebase_end_dt.tzinfo is None:
+                    firebase_end_dt = firebase_end_dt.replace(tzinfo=timezone.utc)
             else:
                 firebase_end_dt = firebase_end_date
+                if firebase_end_dt.tzinfo is None:
+                    firebase_end_dt = firebase_end_dt.replace(tzinfo=timezone.utc)
             
             # Verificar si las fechas son diferentes (tolerancia de 1 minuto)
             start_diff = abs((google_start_dt - firebase_start_dt).total_seconds())
@@ -360,6 +408,78 @@ class SyncService:
             return True
         
         return False
+    
+    def _detect_event_type_from_title(self, title: str) -> str:
+        """
+        Detecta automáticamente el tipo de evento basado en palabras clave en el título.
+        
+        Tipos posibles:
+        - obligatorio: Clases institucionales, materias académicas, exámenes, asesorías
+        - recreativo: Deportes, entretenimiento, pasatiempos, hobbies
+        - estudio: Proyectos personales, tesis, investigación, lectura
+        - personal: Citas médicas, trámites personales, asuntos familiares
+        """
+        if not title:
+            return 'recreativo'
+        
+        title_lower = title.lower()
+        
+        # Palabras clave para OBLIGATORIO (clases institucionales)
+        mandatory_keywords = [
+            'matemática', 'matemáticas', 'física', 'química', 'programación',
+            'inglés', 'historia', 'geografía', 'biología', 'literatura',
+            'clase', 'examen', 'evaluación', 'prueba', 'exposición',
+            'presentación', 'asesoría', 'tutoría', 'reunión', 'junta',
+            'conferencia', 'seminario', 'capacitación'
+        ]
+        
+        # Palabras clave para RECREATIVO
+        recreational_keywords = [
+            'yoga', 'gimnasio', 'deporte', 'bailar', 'baile', 'correr',
+            'ejercicio', 'entrenamiento', 'partido', 'juego', 'película',
+            'cine', 'música', 'concierto', 'fiesta', 'salir', 'paseo',
+            'hobby', 'videojuego', 'natación', 'fútbol', 'basquet',
+            'cumpleaños', 'celebración', 'descanso', 'relajación'
+        ]
+        
+        # Palabras clave para ESTUDIO (proyectos personales de aprendizaje)
+        study_keywords = [
+            'proyecto', 'desarrollo', 'software', 'código', 'tesis',
+            'investigación', 'laboratorio', 'deadline', 'entrega',
+            'lectura', 'leer', 'material', 'complementario', 'estudiar',
+            'sprint', 'scrum', 'implementación', 'producción'
+        ]
+        
+        # Palabras clave para PERSONAL
+        personal_keywords = [
+            'médico', 'doctor', 'dentista', 'cita', 'consulta',
+            'trámite', 'banco', 'pago', 'factura', 'impuestos',
+            'familia', 'papá', 'mamá', 'hermano', 'hijo',
+            'compras', 'supermercado', 'reparación', 'mantenimiento'
+        ]
+        
+        # Verificar palabras clave de obligatorio (prioridad alta)
+        for keyword in mandatory_keywords:
+            if keyword in title_lower:
+                return 'obligatorio'
+        
+        # Verificar palabras clave de estudio
+        for keyword in study_keywords:
+            if keyword in title_lower:
+                return 'estudio'
+        
+        # Verificar palabras clave personales
+        for keyword in personal_keywords:
+            if keyword in title_lower:
+                return 'personal'
+        
+        # Verificar palabras clave recreativas
+        for keyword in recreational_keywords:
+            if keyword in title_lower:
+                return 'recreativo'
+        
+        # Por defecto: recreativo
+        return 'recreativo'
     
     def import_from_google_only(self) -> Dict[str, Any]:
         """

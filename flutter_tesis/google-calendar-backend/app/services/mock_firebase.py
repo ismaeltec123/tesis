@@ -55,12 +55,9 @@ class MockFirebaseService:
             return []
     
     def create_event(self, event_data: Dict[str, Any]) -> str:
-        """Crea un evento"""
+        """Crea un evento (CON deduplicación)"""
         try:
             data = self._load_data()
-            
-            # Generar ID único
-            event_id = f"temp_id_{datetime.now().timestamp()}"
             
             # Convertir datetime a string antes de guardar
             serializable_data = {}
@@ -70,6 +67,17 @@ class MockFirebaseService:
                 else:
                     serializable_data[key] = value
             
+            # DEDUPLICACIÓN: Verificar si ya existe un evento idéntico
+            existing_events = data.get("events", [])
+            for existing in existing_events:
+                if (existing.get('title') == serializable_data.get('title') and
+                    existing.get('date') == serializable_data.get('date') and
+                    existing.get('end_time') == serializable_data.get('end_time')):
+                    print(f"⚠️  Evento duplicado detectado, omitiendo: {serializable_data.get('title')}")
+                    return existing.get('firebase_id', 'existing_id')
+            
+            # Generar ID único
+            event_id = f"temp_id_{datetime.now().timestamp()}"
             serializable_data['firebase_id'] = event_id
             serializable_data['created_at'] = datetime.now().isoformat()
             
@@ -77,7 +85,6 @@ class MockFirebaseService:
             self._save_data(data)
             
             print(f"✅ Evento creado (simulado): {serializable_data.get('title', 'Sin título')}")
-            print(f"📁 Guardado en: {self.data_file}")
             return event_id
             
         except Exception as e:
@@ -167,15 +174,10 @@ def get_firebase_service():
     """Retorna el servicio de Firebase (real o simulado)"""
     global _mock_firebase_instance
     
-    try:
-        # Intentar usar Firebase real
-        from app.services.firebase_sync import FirebaseService
-        return FirebaseService()
-    except Exception as e:
-        # Si falla, usar versión simulada (singleton)
-        if _mock_firebase_instance is None:
-            print(f"⚠️  Firebase no disponible, usando modo simulado")
-            _mock_firebase_instance = MockFirebaseService()
-        else:
-            print(f"🔄 Reutilizando instancia de Firebase simulado")
-        return _mock_firebase_instance
+    # FORZAR USO DE MOCK (evitar quota exceeded de Firebase real)
+    if _mock_firebase_instance is None:
+        print(f"🔥 Usando modo Firebase simulado (archivo local)")
+        _mock_firebase_instance = MockFirebaseService()
+    else:
+        print(f"🔄 Reutilizando instancia de Firebase simulado")
+    return _mock_firebase_instance
